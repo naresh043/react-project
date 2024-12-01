@@ -1,0 +1,45 @@
+.circular-photo {
+    
+    width: 150px; /* Set desired size */
+    height: 150px; /* Keep width and height equal for a circle */
+    border-radius: 50%; /* Makes it circular */
+    border: 1.5px solid black;
+    box-shadow: 10px 10px 5px #aaaaaa;
+    overflow: hidden; /* Ensures no content overflows */
+    object-fit: cover; /* Ensures the image fills the circle without distortion */
+    display: block; /* Avoids inline gaps */
+    margin: 0 auto; /* Centers the image horizontally (optional) */ 
+    margin-top: 5px;
+  }
+  .card-name{
+    text-align: center;
+  }
+  .rat-dat{
+    display: flex;
+   justify-content: space-between;
+
+  }
+  /* .btn_negitive{
+    padding: 2px 7px;
+   border-radius: 10px;
+   background-image: linear-gradient(to right,#30E8BF ,#F16529);
+  }
+  .btn_negitive:hover{
+    color: white;
+   background-image: linear-gradient(to right,#1f4037,#99f2c8);
+  } */
+
+  .btn_positive{
+    /* background-color:#f4651e; */
+   padding: 2px 10px;
+   border-radius: 10px;
+   background-image: linear-gradient(to right,#f3914fbd ,#3b43719d);
+  }
+  .btn_positive:hover{
+   padding: 3px 10px;
+    /* background-color:#f4651e; */
+   background-image: linear-gradient(to right,#f16a0f ,#0e2ee6f3);
+   color: white;
+   border: 1px solid black;
+
+  }
