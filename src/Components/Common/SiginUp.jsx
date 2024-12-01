@@ -50,7 +50,7 @@ function Signup() {
 
     setValues({ name: "", email: "", passWord: "", confirmPass: "" });
   };
-
+console.log('hello')
   return (
     <>
       <div className="signupContainer">
