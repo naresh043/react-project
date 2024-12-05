@@ -15,7 +15,7 @@ function Courses() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const dispatch = useDispatch();
   const searchQuery = useSelector((state) => state.search.query); // Get the search query from the store
-
+  
   useEffect(() => {
     const fetchReviews = async () => {
       try {

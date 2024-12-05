@@ -138,7 +138,7 @@ const RoadmapCourseCard = () => {
             </div>
           </div>
          
-            <hr className="custom-hr" />
+            <hr id="custom-hr" />
 
 
 

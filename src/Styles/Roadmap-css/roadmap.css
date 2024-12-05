@@ -158,12 +158,12 @@
   width: 100%;
 }
 
-.custom-hr {
+#custom-hr {
   height: 2px;
   width: 100%;
   background-color: black;
   border: none;
-  margin: 10px 0;
+  /* margin: 10px 0; */
 }
 
 /* Media Queries for Responsiveness */

@@ -2,14 +2,51 @@ import React, { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import "../../Styles/Common-css/Navbar.css"
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+
+
+// toasters 
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
  const location = useLocation()
+
+   // here user login ornot cheak 
+   const isUserLogin =useSelector((state)=>state.search?.user?.login)
+   const isUserLogout =useSelector((state)=>state.search?.user?.logout)
+ console.log(isUserLogout,"logout")
+   console.log(location?.pathname ==="/Login",'is');
+
+  //  assing dispatch to dispatch variable 
+  const dispatch = useDispatch();
+
   const handleHamburger = () => {
-    setMenuOpen((prevMenuOpen) => !prevMenuOpen); // Toggle the menu open state
+    setMenuOpen((prevMenuOpen) => !prevMenuOpen);
     
+  };
+  const handleHamburgerLogOut = () => {
+    setMenuOpen((prevMenuOpen) => !prevMenuOpen);
+    // Show toast after logout
+  
+    toast.success("Logout successful!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      // onClose:dispatch(isUserLogout(true))
+    });
+    // setTimeout(() => {
+      dispatch(isUserLogout(true));
+      
+      // Update Redux state
+    // }, 100);
+  console.log(isUserLogout,"logout ")
   };
 
   const handleAccountMouseEnter = () => {
@@ -19,9 +56,7 @@ function Navbar() {
   const handleAccountMouseLeave = () => {
     setIsOpen(false);
   };
-  // here user login ornot cheak 
-  const isUserLogin =useSelector((state)=>state.search?.user?.login)
-  console.log(location?.pathname ==="/Login",'is');
+
  
 
   return (
@@ -91,7 +126,20 @@ function Navbar() {
                 onClick={handleHamburger}
               >
                 <span>
-                    <i class="fa-solid fa-hotel navLinkIcon"></i>About
+                <i class="fa-solid fa-address-card"></i> About
+                  </span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/enrollecourses"
+                className={({ isActive }) =>
+                  isActive ? "active link" : "link"
+                }
+                onClick={handleHamburger}
+              >
+                <span>
+                <i class="fa-solid fa-graduation-cap"></i> Enrolled
                   </span>
               </NavLink>
             </li>
@@ -111,7 +159,11 @@ function Navbar() {
                   onMouseEnter={handleAccountMouseEnter}
                   onMouseLeave={handleAccountMouseLeave}
                 >
-                 {location?.pathname !=="/Login" ? <li>
+                {isUserLogin ?<li>
+                    <Link to="/Login" onClick={handleHamburgerLogOut}>
+                      Logout
+                    </Link>
+                  </li>: location?.pathname !=="/Login" ? <li>
                     <Link to="/Login" onClick={handleHamburger}>
                       Login
                     </Link>
@@ -132,6 +184,7 @@ function Navbar() {
           </div>
         </div>
       </nav>
+      {/* <ToastContainer /> */}
     </header>
     
   );

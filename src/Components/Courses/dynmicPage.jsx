@@ -1,22 +1,32 @@
 import { useLocation, useParams } from "react-router-dom";
-import Footer from "../Common/Footer";
-import Navbar from "../Common/Navbar";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../../Styles/Courses/courses.css";
 import Loading from "../Common/loading";
+import { useDispatch, useSelector } from "react-redux";
+// this is the import the action from store
+import { userDetils } from "../../Redux/features/searchSlice";
+import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
 
 const DynamicPage = () => {
-    let { id } = useParams(); 
-    const [data, setData] = useState(null); 
-    const [loading, setLoading] = useState(true); 
-    const [error, setError] = useState(null); 
+    const navigate = useNavigate();
+    let { id } = useParams();
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const userData = useSelector((state) => state?.search?.userDetails) || {};
+    const dispatch = useDispatch();
+
     useEffect(() => {
         const fetchedData = async () => {
             try {
-                let { data } = await axios.get(`https://giant-ambitious-danger.glitch.me/coursesdata/${id}`);
-                setData(data); 
-                setLoading(false); 
+                const { data } = await axios.get(`https://giant-ambitious-danger.glitch.me/coursesdata/${id}`);
+                setData(data);
+                setLoading(false);
+                console.log(data);
             } catch (err) {
                 setError("Error occurred while fetching data.");
                 setLoading(false);
@@ -27,15 +37,78 @@ const DynamicPage = () => {
         if (id) {
             fetchedData();
         }
-    }, [id]); 
+    }, [id]);
 
     if (loading) {
-        return <div><Loading/></div>; 
+        return <div><Loading /></div>;
     }
 
     if (error) {
-        return <div>{error}</div>; 
+        return <div>{error}</div>;
     }
+
+    const backButton = () => {
+        navigate("/courses");
+        console.log("btn clicked");
+    };
+
+    const handleAddCourse = async () => {
+        try {
+            // Ensure `enrolledCourses` is an array
+            const enrolledCourses = Array.isArray(userData?.enrolledCourses)
+                ? userData.enrolledCourses
+                : [];
+
+            // Ensure `data` (course details) is valid
+            if (!data) {
+                throw new Error("Course data is missing.");
+            }
+
+            // Check if the course is already enrolled
+        const isAlreadyEnrolled = enrolledCourses.some(
+            (course) => course.id === data.id
+        );
+
+        console.log(isAlreadyEnrolled); // This should log true if the user is already enrolled
+        if (isAlreadyEnrolled) {
+            toast.warning("You are already enrolled in this course.", {
+                position:"top-right",
+                autoClose: 2000,
+            });
+            return;
+        }
+
+            // Create the updated user object
+            const updatedUser = {
+                id: userData?.id,
+                name: userData?.name,
+                email: userData?.email,
+                password: userData?.password,
+                enrolledCourses: [...enrolledCourses, data], // Add the new course
+            };
+
+            // Send the updated user data to the server
+            const response = await axios.put(
+                `https://giant-ambitious-danger.glitch.me/credentials/${userData.id}`,
+                updatedUser,
+                { headers: { "Content-Type": "application/json" } }
+            );
+
+            if (response.status !== 200) {
+                throw new Error("Failed to update user data.");
+            }
+
+            // Update Redux state
+            dispatch(userDetils(updatedUser));
+            toast.success("Course added successfully!", {
+                position:"top-right",
+                autoClose: 1000,
+            });
+            console.log("Course added successfully!", updatedUser);
+        } catch (error) {
+            console.error("Error adding course:", error.message);
+        }
+    };
 
     return (
         <>
@@ -94,19 +167,26 @@ const DynamicPage = () => {
                             ))}
                         </ul>
 
-                        <button onClick={() => setData(null)} className="back-btn">
+                        <button onClick={backButton} className="back-btn">
                             <i className="fa-solid fa-arrow-left"></i>
                             Back to Courses
                         </button>
-                        <a
-                            href={data.courseLink}
-                            target="_self"
-                            rel="noopener noreferrer"
+                        <button
+                            type="button"
+                            // href={data.courseLink}
+                            // target="_blank"
                             className="course-link"
+                            onClick={async () => {
+                                handleAddCourse();
+                                setTimeout(() => {
+                                    
+                                    window.open(data.courseLink, "_blank"); 
+                                }, 1900);
+                            }}
                         >
                             Enroll Now
                             <i className="fas fa-arrow-right"></i>
-                        </a>
+                        </button>
                     </div>
                 </div>
             )}

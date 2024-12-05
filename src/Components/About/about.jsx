@@ -7,7 +7,7 @@ const AboutSection = () => {
   return (
     <>
     {/* <Navbar/> */}
-      <h1 className="about-us">About Us</h1><hr />
+      <h2 className="about-us">About Us</h2><hr />
     <div className="about-container">
         
       <div className="elerrn-container">

@@ -1,7 +1,14 @@
 import Carousel from "react-bootstrap/Carousel";
+import { useNavigate } from "react-router-dom";
 import "../../Styles/home-css/coursel.css";
 
 function Coursel_home() {
+  const navigate=useNavigate()   
+
+  const EnrollCourse = () => {
+    navigate("/courses");
+    console.log("btn clicked");
+  };
   return (
     <Carousel data-bs-theme="dark">
       <Carousel.Item>
@@ -18,7 +25,7 @@ function Coursel_home() {
               Learning is the only thing the mind never exhausts, never fears,
               and never regrets
             </p>
-            <button className="Carousel-btn">Enroll Course Here</button>
+            <button onClick={EnrollCourse} className="Carousel-btn">Enroll Course Here</button>
           </div>
         </Carousel.Caption>
       </Carousel.Item>
@@ -35,7 +42,7 @@ function Coursel_home() {
             <p className="Carousel-inner-text2">
               Never stop learning because life never stops teaching.
             </p>
-            <button className="Carousel-btn">Enroll Course Here</button>
+            <button onClick={EnrollCourse} className="Carousel-btn">Enroll Course Here</button>
           </div>
         </Carousel.Caption>
       </Carousel.Item>
@@ -52,7 +59,7 @@ function Coursel_home() {
               The beautiful thing about learning is that nobody can take it away
               from you
             </p>
-            <button className="Carousel-btn">Enroll Course Here</button>
+            <button onClick={EnrollCourse} className="Carousel-btn">Enroll Course Here</button>
           </div>
         </Carousel.Caption>
       </Carousel.Item>
@@ -68,7 +75,7 @@ function Coursel_home() {
             <p className="Carousel-inner-text2">
               Never stop learning because life never stops teaching.
             </p>
-            <button className="Carousel-btn">Enroll Course Here</button>
+            <button onClick={EnrollCourse} className="Carousel-btn">Enroll Course Here</button>
           </div>
         </Carousel.Caption>
       </Carousel.Item>

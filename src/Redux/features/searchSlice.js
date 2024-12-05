@@ -6,8 +6,10 @@ const searchSlice = createSlice({
   initialState: {
     query: '', // Store the search query
     user: {
-      login: false,  
+      login: false,
+      logout:null,
     },
+    userDetails:null
 
   },
   reducers: {
@@ -17,9 +19,16 @@ const searchSlice = createSlice({
     isUserLogin: (state, action) => {
       state.user.login = action.payload;  
     },
+    isUserLogout: (state, action) => {
+      state.user.logout = action.payload;  
+    },
+    userDetils: (state, action) => {
+      state.userDetails = action.payload; // Correctly update the userDetails state
+  
+    },
 
   },
 });
 
-export const { setSearchQuery, isUserLogin } = searchSlice.actions;
+export const { setSearchQuery, isUserLogin,isUserLogout,userDetils } = searchSlice.actions;
 export default searchSlice.reducer;

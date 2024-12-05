@@ -43,3 +43,9 @@
    border: 1px solid black;
 
   }
+  .ReviewButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+  }

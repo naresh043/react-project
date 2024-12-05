@@ -1,0 +1,166 @@
+.enrolled-name{
+  /* padding-left: 10px; */
+    padding: 0px 20px;
+    font-size: 1.8rem;
+}
+.course-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 10px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+}
+
+.course-card-left {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 20px;
+  background-color: #3b3b6d;
+  border-radius: 12px 0 0 12px;
+  color: #ffffff;
+}
+
+.course-card-left h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.course-card-left a {
+  color: #ffcc00;
+  text-decoration: none;
+  margin-top: 8px;
+}
+
+.course-card-left a:hover {
+  /* font-weight: 600; */
+  text-decoration: underline;
+  color:white ;
+}
+
+.course-card-right {
+  flex: 3;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #333333;
+}
+
+.course-card-right h4 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: #6a6a6a;
+}
+
+.course-card-right ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.course-card-right li {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  color: #5a5a5a;
+}
+
+.course-card-right .progress-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.progress-bar {
+  background: #eaeaea;
+  border-radius: 5px;
+  width: 80%;
+  height: 8px;
+  position: relative;
+}
+
+.progress-bar span {
+  display: block;
+  background: #f5af19;
+  border-radius: 5px;
+  height: 100%;
+  width: 70%; /* Adjust based on progress */
+}
+
+.progress-text {
+  font-size: 0.9rem;
+  color: #6a6a6a;
+}
+
+.btn-div-enrolled{
+  display: flex;
+  /* border: 2px solid red; */
+  justify-content: space-between;
+}
+.continue-button {
+  padding: 10px 20px;
+  background: #3b3b6d;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  align-self: flex-start;
+  transition: background-color 0.3s,
+}
+
+.continue-button:hover {
+  background: #2c2c5a;
+  transform: scale(1.05);
+  background-image: linear-gradient(to right, #f16a0f, #0e2ee6f3);
+
+}
+.delete-button {
+  padding: 10px 20px;
+  background: #f16a0f;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  align-self: flex-start;
+  transition: background-color 0.3s,
+
+}
+.delete-button:hover{
+  transform: scale(1.05);
+background-color: red;
+}
+
+.courses-container {
+  max-width: 900px;
+  margin: 20px auto;
+}
+
+.no-enrolled-container {
+  display: flex; /* Flexbox for centering */
+  justify-content: center; /* Horizontally center content */
+  align-items: center; /* Vertically center content */
+  height: 70vh; /* Full viewport height */
+  width: 98.5vw;
+  /* padding: 20px; *//* Add some padding */
+  box-sizing: border-box; /* Include padding in height and width calculations */
+  /* border: 2px solid red; */
+
+}
+.no-enrolled-message {
+  max-width: 90%; /* Restrict image to a maximum width */
+  max-height: 60%; /* Restrict image to a maximum height */
+  object-fit: contain; /* Ensure the image scales proportionally */
+  border-radius: 10px; /* Round the corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+   /* Add a slight shadow for depth */
+  animation: fadeIn 0.5s ease-in-out; /* Fade-in animation */
+  /* border: 2px solid red; */
+
+}

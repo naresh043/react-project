@@ -4,7 +4,10 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/Common-css/login.css";
 import { useLocation,useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { isUserLogin } from "../../Redux/features/searchSlice";
+import { isUserLogin,isUserLogout,userDetils} from "../../Redux/features/searchSlice";
+import { useSelector } from "react-redux";
+import axios from "axios"; // Import axios
+
 function LogIn() {
   let [userData, setuserData] = useState({
     userName: "",
@@ -13,16 +16,15 @@ function LogIn() {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate =useNavigate()
-  // const location = useLocation()
+ 
   const dispatch = useDispatch()
 
-  let localUserData = JSON.parse(localStorage.getItem("userDetails")) || []; // Parse or default to an empty array
-  console.log(localUserData, "localstorage");
+  const user_data= useSelector((state)=>state.search.userDetails)
 
   let handle_Username = (e) => {
     setuserData((prevData) => ({
       ...prevData,
-      userName: e.target.value,
+      userEmail: e.target.value,
     }));
     console.log(e.target.value);
   };
@@ -36,43 +38,47 @@ function LogIn() {
   };
 
   let togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev); // Toggle the showPassword state
+    setShowPassword((prev) => !prev); 
   };
 
-  let handleLogin = (e) => {
-    e.preventDefault(); // Prevent form submission
+  let handleLogin = async (e) => {
+    e.preventDefault(); 
 
-    // Compare user input with stored data
-    const isUserValid = localUserData.some(
-      (user) =>
-        user.name === userData.userName &&
-        user.passWord === userData.password
-    );
 
-    if (isUserValid) {
-      // Display success toast
-      toast.success( `Wellcome Back ${userData.userName}`, {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        onClose: () => navigate("/")
-      });
-      // navigate("/");
-      dispatch(isUserLogin(true))
-    } else {
-      // Display error toast
-      toast.error("Invalid username or password.", {
+    try {
+     // Fetch data from the API using axios
+     const response = await axios.get("https://giant-ambitious-danger.glitch.me/credentials");
+     const users = response.data; // Get users from response
+
+      // Validate user credentials
+      const isUserValid = users.find(
+        (user) =>
+          user.email === userData.userEmail &&
+          user.password === userData.password
+      );
+
+      if (isUserValid) {
+        dispatch(userDetils(isUserValid));
+        // Success toast
+        toast.success(`Welcome Back ${isUserValid.name}!`, {
+          position: "top-right",
+          autoClose: 1000,
+          onClose: () => navigate("/"),
+        });
+        dispatch(isUserLogin(true));
+        dispatch(isUserLogout(false));
+      } else {
+        // Error toast for invalid credentials
+        toast.error("Invalid username or password.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      // Error toast for API issues
+      toast.error(`Error fetching user data: ${error.message}`, {
         position: "top-right",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
       });
     }
   };
@@ -86,7 +92,7 @@ function LogIn() {
             <input
               type="text"
               id="userName"
-              placeholder="Username"
+              placeholder="Username or Email"
               required
               onChange={handle_Username}
             />
@@ -119,7 +125,7 @@ function LogIn() {
         </form>
       </div>
       {/* Render ToastContainer */}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 }

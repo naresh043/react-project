@@ -35,7 +35,7 @@ function ReviewsCards() {
   }, []); // Empty dependency array means it runs once when the component mounts
 
   if (loading) {
-    return <div>{<Loading/>}</div>; // Show loading message
+    return <div>{<Loading />}</div>; // Show loading message
   }
 
   if (error) {
@@ -46,22 +46,32 @@ function ReviewsCards() {
   const mappedReviews = reviews.map((val, ind) => (
     <Card style={{ width: "27rem" }} key={ind}>
       <div>
-        <img
-          src={val.image}
-          alt="Circular Photo"
-          class="circular-photo"
-        />
+        <img src={val.image} alt="Circular Photo" class="circular-photo" />
       </div>
       <Card.Body>
         <Card.Title className="card-name">{val.name}</Card.Title>
         <Card.Title>{val.courseName}</Card.Title>
         <Card.Text>{val.feedback}</Card.Text>
-        <Card.Text><b>Difficulty Level:</b> {val.difficultyLevel}</Card.Text>
+        <Card.Text>
+          <b>Difficulty Level:</b> {val.difficultyLevel}
+        </Card.Text>
         <Card.Text>Suggestions: {val.suggestions}</Card.Text>
-        <div className="rat-dat"><Card.Text>Rating: {val.rating}<i class="fa-solid fa-star"></i></Card.Text>
-        <Card.Text> <b>Date: </b>{val.date}</Card.Text></div>
-
-<button variant="primary" className="btn_positive">{val.reviewType}</button>
+        <div className="rat-dat">
+          <Card.Text>
+            Rating: {val.rating}
+            <i class="fa-solid fa-star"></i>
+          </Card.Text>
+          <Card.Text>
+            {" "}
+            <b>Date: </b>
+            {val.date}
+          </Card.Text>
+        </div>
+        <div className="ReviewButton">
+          <button variant="primary" className="btn_positive">
+            {val.reviewType}
+          </button>
+        </div>
       </Card.Body>
     </Card>
   ));
@@ -69,16 +79,17 @@ function ReviewsCards() {
   // Render the mapped reviews
   return (
     <>
-    {/* <Navbar/> */}
-    <Coursel_home/>
-    <div class="review-main-div">
-    <h2 className="testimonilas">Testimonilas</h2><hr />
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
-      {mappedReviews}
-    </div>
-    </div>
+      {/* <Navbar/> */}
+      <Coursel_home />
+      <div class="review-main-div">
+        <h2 className="testimonilas">Testimonilas</h2>
+        <hr />
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+          {mappedReviews}
+        </div>
+      </div>
 
-    {/* <Footer/> */}
+      {/* <Footer/> */}
     </>
   );
 }

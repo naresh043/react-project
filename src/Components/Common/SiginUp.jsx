@@ -2,51 +2,87 @@ import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for toast
 import "../../Styles/Common-css/SiginUp.css";
-import Navbar from "./Navbar";
+import { useDispatch } from "react-redux"; // Import useDispatch
+// import { userDetils } from "../../Redux/features/searchSlice";
+import { isUserLogin,userDetils } from "../../Redux/features/searchSlice";
+import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Import axios
+
 
 function Signup() {
+  const dispatch = useDispatch();
+  const navigate=useNavigate()
   const [values, setValues] = useState({
     name: "",
     email: "",
     passWord: "",
     confirmPass: "",
-  });
-  // const [matchPass,setmatchPass]=useState(false)
+    enrolledCourses:[]
 
-  const handleSubmit = (e) => {
+  });
+
+
+  const handleSubmit = async  (e) => {
     e.preventDefault();
 
-    // Check if passwords match
+   
     if (values.passWord !== values.confirmPass) {
       toast.error("Passwords do not match!", {
         position: "top-right",
         autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
       });
-      return; // Stop further execution if passwords don't match
+      return;
     }
 
-    let previousDetails = localStorage.getItem("userDetails");
+    try {
+      // First, check if the email already exists
+    const checkResponse = await axios.get(
+      `https://giant-ambitious-danger.glitch.me/credentials?email=${values.email}`
+    );
 
-    let val = JSON.parse(previousDetails) || [];
-    let arr = [...val, values];
+    if (checkResponse.data.length > 0) {
+      // If the email already exists, show an error toast
+      toast.error("User is already exists!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+     // If the email does not exist, proceed with registration
+      const response = await axios.post("https://giant-ambitious-danger.glitch.me/credentials", {
+        name: values.name,
+        email: values.email,
+        password: values.passWord,
+        enrolledCourses: values?.enrolledCourses
+      });
 
-    localStorage.setItem("userDetails", JSON.stringify(arr));
+      // If the response is successful
+      if (response.status === 201) {
+        const responseData = response.data; // Extract the response data
+        const userData = {
+          name: values.name,
+          email: values.email,
+          enrolledCourses: values.enrolledCourses,
+          password: values.passWord,
+          id: responseData.id
+        };
+        dispatch(isUserLogin(true));
+        dispatch(userDetils(userData));
+        toast.success("Signup successful and data sent to server!", {
+          position: "top-right",
+          autoClose: 2000,
+          onClose: () => navigate("/"),
+        });
+      } else {
+        throw new Error("Failed to send data to the server.");
+      }
+    } catch (error) {
+      toast.error(`Error: ${error.message}`, {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
 
-    // Display a success toast
-    toast.success("Signup successful!", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
 
     setValues({ name: "", email: "", passWord: "", confirmPass: "" });
   };
@@ -115,21 +151,6 @@ function Signup() {
                   return { ...pre, confirmPass: e?.target?.value };
                 });
               }}
-              // onBlur={(e) => {
-              //   if (values?.passWord === e.target.value) {
-              //     setmatchPass(true)
-              //   } else {
-              //     toast.error("Passwords do not match!", {
-              //       position: "top-right",
-              //       autoClose: 3000,
-              //       hideProgressBar: false,
-              //       closeOnClick: true,
-              //       pauseOnHover: true,
-              //       draggable: true,
-              //       progress: undefined,
-              //     })
-              //   }
-              // }}
             />
           </div>
           <p>
@@ -140,7 +161,7 @@ function Signup() {
           </button>
         </form>
       </div>
-      <ToastContainer /> {/* Required to display toasts */}
+      {/* <ToastContainer /> */}{/* Required to display toasts */}
     </>
   );
 }
