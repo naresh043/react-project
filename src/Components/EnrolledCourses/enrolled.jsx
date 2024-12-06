@@ -11,11 +11,9 @@ function EnrolledCourses() {
   const userData = useSelector((state) => state?.search?.userDetails) || {};
 
   let deleteCourse = async (id) => {
-    console.log(id, userData.enrolledCourses, "iddddddddddd printed ");
     const latestCourses = userData.enrolledCourses.filter((val) => {
       return val.id !== id;
     });
-    console.log(latestCourses, "latestttt");
     const updatedUser = {
       id: userData?.id,
       name: userData?.name,
@@ -42,7 +40,6 @@ function EnrolledCourses() {
 
       // Dispatch the updated user details to Redux
       dispatch(userDetils(updatedUser));
-      console.log("User data updated successfully!");
       dispatch(userDetils(updatedUser));
       toast.success("Course delete successfully!", {
           position:"top-right",

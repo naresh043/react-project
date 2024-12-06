@@ -1,25 +1,28 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import "../../Styles/Common-css/Navbar.css"
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-
-
 // toasters 
 import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Cookies from "js-cookie"; 
+
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
  const location = useLocation()
+ const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-   // here user login ornot cheak 
+   
    const isUserLogin =useSelector((state)=>state.search?.user?.login)
    const isUserLogout =useSelector((state)=>state.search?.user?.logout)
- console.log(isUserLogout,"logout")
-   console.log(location?.pathname ==="/Login",'is');
 
+   useEffect(() => {
+    const userCookie = Cookies.get("AuthToken");
+    setIsAuthenticated(userCookie === "true");
+  }, [isUserLogin,isUserLogout]);
   //  assing dispatch to dispatch variable 
   const dispatch = useDispatch();
 
@@ -33,7 +36,7 @@ function Navbar() {
   
     toast.success("Logout successful!", {
       position: "top-right",
-      autoClose: 3000,
+      autoClose: 1000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -41,12 +44,9 @@ function Navbar() {
       progress: undefined,
       // onClose:dispatch(isUserLogout(true))
     });
-    // setTimeout(() => {
-      dispatch(isUserLogout(true));
-      
-      // Update Redux state
-    // }, 100);
-  console.log(isUserLogout,"logout ")
+    Cookies.remove("AuthToken")
+    dispatch(isUserLogin(true));
+    dispatch(isUserLogout(false));
   };
 
   const handleAccountMouseEnter = () => {
@@ -56,8 +56,6 @@ function Navbar() {
   const handleAccountMouseLeave = () => {
     setIsOpen(false);
   };
-
- 
 
   return (
     <header className="navheader">
@@ -74,7 +72,7 @@ function Navbar() {
               menuOpen ? "linksContaineractive" : ""
             }`}
           >
-            {isUserLogin && (
+            {isAuthenticated && (
               <>
               <li>
               <NavLink
@@ -159,7 +157,7 @@ function Navbar() {
                   onMouseEnter={handleAccountMouseEnter}
                   onMouseLeave={handleAccountMouseLeave}
                 >
-                {isUserLogin ?<li>
+                { isAuthenticated ?<li>
                     <Link to="/Login" onClick={handleHamburgerLogOut}>
                       Logout
                     </Link>
@@ -184,7 +182,6 @@ function Navbar() {
           </div>
         </div>
       </nav>
-      {/* <ToastContainer /> */}
     </header>
     
   );

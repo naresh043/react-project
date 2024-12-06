@@ -22,7 +22,6 @@ const RoadmapCourseCard = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
         setCourses(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {

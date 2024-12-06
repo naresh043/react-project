@@ -6,8 +6,8 @@ import { useLocation,useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { isUserLogin,isUserLogout,userDetils} from "../../Redux/features/searchSlice";
 import { useSelector } from "react-redux";
-import axios from "axios"; // Import axios
-
+import axios from "axios"; 
+import Cookies from "js-cookie"; 
 function LogIn() {
   let [userData, setuserData] = useState({
     userName: "",
@@ -19,14 +19,12 @@ function LogIn() {
  
   const dispatch = useDispatch()
 
-  const user_data= useSelector((state)=>state.search.userDetails)
 
   let handle_Username = (e) => {
     setuserData((prevData) => ({
       ...prevData,
       userEmail: e.target.value,
     }));
-    console.log(e.target.value);
   };
 
   let handle_password = (e) => {
@@ -34,7 +32,6 @@ function LogIn() {
       ...prevData,
       password: e.target.value,
     }));
-    console.log(e.target.value);
   };
 
   let togglePasswordVisibility = () => {
@@ -58,6 +55,8 @@ function LogIn() {
       );
 
       if (isUserValid) {
+        Cookies.set("AuthToken",true,{ expires: 2 / 24 / 60 })
+
         dispatch(userDetils(isUserValid));
         // Success toast
         toast.success(`Welcome Back ${isUserValid.name}!`, {
@@ -67,18 +66,19 @@ function LogIn() {
         });
         dispatch(isUserLogin(true));
         dispatch(isUserLogout(false));
+       
       } else {
         // Error toast for invalid credentials
         toast.error("Invalid username or password.", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 1000,
         });
       }
     } catch (error) {
       // Error toast for API issues
       toast.error(`Error fetching user data: ${error.message}`, {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 1000,
       });
     }
   };
@@ -124,8 +124,6 @@ function LogIn() {
           </p>
         </form>
       </div>
-      {/* Render ToastContainer */}
-      {/* <ToastContainer /> */}
     </>
   );
 }

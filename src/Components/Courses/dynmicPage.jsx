@@ -26,7 +26,6 @@ const DynamicPage = () => {
                 const { data } = await axios.get(`https://giant-ambitious-danger.glitch.me/coursesdata/${id}`);
                 setData(data);
                 setLoading(false);
-                console.log(data);
             } catch (err) {
                 setError("Error occurred while fetching data.");
                 setLoading(false);
@@ -49,7 +48,6 @@ const DynamicPage = () => {
 
     const backButton = () => {
         navigate("/courses");
-        console.log("btn clicked");
     };
 
     const handleAddCourse = async () => {
@@ -69,7 +67,6 @@ const DynamicPage = () => {
             (course) => course.id === data.id
         );
 
-        console.log(isAlreadyEnrolled); // This should log true if the user is already enrolled
         if (isAlreadyEnrolled) {
             toast.warning("You are already enrolled in this course.", {
                 position:"top-right",
@@ -104,7 +101,6 @@ const DynamicPage = () => {
                 position:"top-right",
                 autoClose: 1000,
             });
-            console.log("Course added successfully!", updatedUser);
         } catch (error) {
             console.error("Error adding course:", error.message);
         }
