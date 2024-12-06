@@ -43,7 +43,7 @@ function App() {
           </>
         ) :null }
           {/* alwaus shows  */}
-            {/* <Route path="/" element={<LogIn />} /> */}
+            <Route path="/" element={<LogIn />} />
             <Route path="/Login" element={<LogIn />} />
             <Route path="/Signup" element={<Signup />} />
 

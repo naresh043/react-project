@@ -55,7 +55,7 @@ function LogIn() {
       );
 
       if (isUserValid) {
-        Cookies.set("AuthToken",true,{ expires: 2 / 24 / 60 })
+        Cookies.set("AuthToken",true,{ expires: 1 / 24 })
 
         dispatch(userDetils(isUserValid));
         // Success toast

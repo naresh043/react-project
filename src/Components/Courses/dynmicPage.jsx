@@ -176,7 +176,7 @@ const DynamicPage = () => {
                                 handleAddCourse();
                                 setTimeout(() => {
                                     
-                                    window.open(data.courseLink, "_blank"); 
+                                    window.open(data.courseLink, "_self"); 
                                 }, 1900);
                             }}
                         >

@@ -78,7 +78,7 @@ const RoadmapCourseCard = () => {
           <button className="vivewroadmapbtn">
             <a
               href={course.courseRoadmapLink || "#"}
-              target="_blank"
+              target="_self"
               rel="noopener noreferrer"
             >
               View Roadmap
