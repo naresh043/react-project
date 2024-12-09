@@ -47,8 +47,6 @@ function Navbar() {
       // onClose:dispatch(isUserLogout(true))
     });
     Cookies.remove("AuthToken")
-    // dispatch(isUserLogin(true));
-    // dispatch(isUserLogout(false));
     dispatch(ActionisUserLogin(true));
     dispatch(ActionisUserLogout(null));
     dispatch(ActionuserDetils ([]));
@@ -101,7 +99,7 @@ function Navbar() {
                 onClick={handleHamburger}
               >
                 <span> 
-                    <i class="fa-solid fa-book-open  navLinkIcon"></i>
+                    <i className="fa-solid fa-book-open  navLinkIcon"></i>
                     Courses
                   </span>
               </NavLink>
@@ -115,7 +113,7 @@ function Navbar() {
                 onClick={handleHamburger}
               >
               <span>
-                    <i class="fa-solid fa-route navLinkIcon" ></i>
+                    <i className="fa-solid fa-route navLinkIcon" ></i>
                     Roadmap
                   </span>
               </NavLink>
@@ -129,7 +127,7 @@ function Navbar() {
                 onClick={handleHamburger}
               >
                 <span>
-                <i class="fa-solid fa-address-card"></i> About
+                <i className="fa-solid fa-address-card"></i> About
                   </span>
               </NavLink>
             </li>
@@ -142,7 +140,7 @@ function Navbar() {
                 onClick={handleHamburger}
               >
                 <span>
-                <i class="fa-solid fa-graduation-cap"></i> Enrolled
+                <i className="fa-solid fa-graduation-cap"></i> Enrolled
                   </span>
               </NavLink>
             </li>
@@ -154,7 +152,7 @@ function Navbar() {
                 onMouseEnter={handleAccountMouseEnter}
                 onMouseLeave={handleAccountMouseLeave}
               >
-               <i class="fa-solid fa-user"></i> <i className="fa-solid fa-caret-down"></i>
+               <i className="fa-solid fa-user"></i> <i className="fa-solid fa-caret-down"></i>
               </div>
               {isOpen && (
                 <ul

@@ -15,6 +15,5 @@ createRoot(document.getElementById("root")).render(
         <App />
       </PersistGate>
     </Provider>
-  </BrowserRouter>,
-  document.getElementById("root")
+  </BrowserRouter>
 );

@@ -19,7 +19,6 @@ const DynamicPage = () => {
     const [error, setError] = useState(null);
     const userData = useSelector((state) => state?.search?.userDetails) || {};
     const dispatch = useDispatch();
-console.log(userData)
     useEffect(() => {
         const fetchedData = async () => {
             try {

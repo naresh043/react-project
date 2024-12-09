@@ -46,7 +46,7 @@ function ReviewsCards() {
   const mappedReviews = reviews.map((val, ind) => (
     <Card style={{ width: "27rem" }} key={ind}>
       <div>
-        <img src={val.image} alt="Circular Photo" class="circular-photo" />
+        <img src={val.image} alt="Circular Photo" className="circular-photo" />
       </div>
       <Card.Body>
         <Card.Title className="card-name">{val.name}</Card.Title>
@@ -59,7 +59,7 @@ function ReviewsCards() {
         <div className="rat-dat">
           <Card.Text>
             Rating: {val.rating}
-            <i class="fa-solid fa-star"></i>
+            <i className="fa-solid fa-star"></i>
           </Card.Text>
           <Card.Text>
             {" "}
@@ -81,7 +81,7 @@ function ReviewsCards() {
     <>
       {/* <Navbar/> */}
       <Coursel_home />
-      <div class="review-main-div">
+      <div className="review-main-div">
         <h2 className="testimonilas">Testimonilas</h2>
         <hr />
         <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>

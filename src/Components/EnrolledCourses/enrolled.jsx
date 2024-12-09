@@ -40,7 +40,6 @@ function EnrolledCourses() {
 
       // Dispatch the updated user details to Redux
       dispatch(ActionuserDetils (updatedUser));
-      dispatch(ActionuserDetils (updatedUser));
       toast.success("Course delete successfully!", {
           position:"top-right",
           autoClose: 1000,
