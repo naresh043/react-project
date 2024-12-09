@@ -5,12 +5,15 @@ import App from "./App.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 // importing the store from configStore
-import { store } from "./Redux/redux/config_store.js";
+import { store, persistor } from "./Redux/redux/config_store.js";
+import { PersistGate } from "redux-persist/integration/react"; 
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Provider store={store}>
-      <App />
+    <PersistGate loading={<div>Loading...</div>} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
   </BrowserRouter>,
   document.getElementById("root")
