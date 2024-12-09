@@ -6,7 +6,7 @@ import "../../Styles/Courses/courses.css";
 import Loading from "../Common/loading";
 import { useDispatch, useSelector } from "react-redux";
 // this is the import the action from store
-import { userDetils } from "../../Redux/features/searchSlice";
+import { ActionuserDetils } from "../../Redux/features/searchSlice";
 import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 

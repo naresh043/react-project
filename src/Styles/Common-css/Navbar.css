@@ -60,6 +60,9 @@
     font-weight: 600;
     padding: 10px 10px;
   }
+  .logoutbtn{
+    all: unset; 
+  }
   .linksContainer a i {
     font-size: 18px;
   }

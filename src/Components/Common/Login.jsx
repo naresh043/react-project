@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/Common-css/login.css";
 import { useLocation,useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { isUserLogin,isUserLogout,userDetils} from "../../Redux/features/searchSlice";
+import { ActionisUserLogin,ActionisUserLogout,ActionuserDetils} from "../../Redux/features/searchSlice";
 import { useSelector } from "react-redux";
 import axios from "axios"; 
 import Cookies from "js-cookie"; 
@@ -57,15 +57,15 @@ function LogIn() {
       if (isUserValid) {
         Cookies.set("AuthToken",true,{ expires: 1 / 24 })
 
-        dispatch(userDetils(isUserValid));
+        dispatch(ActionuserDetils(isUserValid));
         // Success toast
         toast.success(`Welcome Back ${isUserValid.name}!`, {
           position: "top-right",
           autoClose: 1000,
           onClose: () => navigate("/"),
         });
-        dispatch(isUserLogin(true));
-        dispatch(isUserLogout(false));
+        dispatch(ActionisUserLogin(true));
+        dispatch(ActionisUserLogout(false));
        
       } else {
         // Error toast for invalid credentials

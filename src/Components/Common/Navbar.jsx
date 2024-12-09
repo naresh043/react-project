@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { toast,ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Cookies from "js-cookie"; 
+import { ActionisUserLogin,ActionisUserLogout,ActionuserDetils } from "../../Redux/features/searchSlice";
 
 
 function Navbar() {
@@ -31,6 +32,7 @@ function Navbar() {
     
   };
   const handleHamburgerLogOut = () => {
+    console.log("LOG OUT")
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
     // Show toast after logout
   
@@ -45,8 +47,11 @@ function Navbar() {
       // onClose:dispatch(isUserLogout(true))
     });
     Cookies.remove("AuthToken")
-    dispatch(isUserLogin(true));
-    dispatch(isUserLogout(false));
+    // dispatch(isUserLogin(true));
+    // dispatch(isUserLogout(false));
+    dispatch(ActionisUserLogin(true));
+    dispatch(ActionisUserLogout(null));
+    dispatch(ActionuserDetils ([]));
   };
 
   const handleAccountMouseEnter = () => {
@@ -158,8 +163,10 @@ function Navbar() {
                   onMouseLeave={handleAccountMouseLeave}
                 >
                 { isAuthenticated ?<li>
-                    <Link to="/Login" onClick={handleHamburgerLogOut}>
+                    <Link to="/Login" >
+                    <button onClick={handleHamburgerLogOut} className="logoutbtn">
                       Logout
+                    </button>
                     </Link>
                   </li>: location?.pathname !=="/Login" ? <li>
                     <Link to="/Login" onClick={handleHamburger}>

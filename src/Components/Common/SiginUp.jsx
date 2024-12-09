@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css"; // Import the CSS for toast
 import "../../Styles/Common-css/SiginUp.css";
 import { useDispatch } from "react-redux"; // Import useDispatch
 // import { userDetils } from "../../Redux/features/searchSlice";
-import { isUserLogin,userDetils } from "../../Redux/features/searchSlice";
+import { ActionisUserLogin,ActionuserDetils } from "../../Redux/features/searchSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import axios
 
@@ -66,8 +66,8 @@ function Signup() {
           password: values.passWord,
           id: responseData.id
         };
-        dispatch(isUserLogin(true));
-        dispatch(userDetils(userData));
+        dispatch(ActionisUserLogin(true));
+        dispatch(ActionuserDetils(userData));
         toast.success("Signup successful and data sent to server!", {
           position: "top-right",
           autoClose: 2000,
