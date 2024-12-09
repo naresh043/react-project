@@ -88,7 +88,10 @@ function EnrolledCourses() {
           </p>
         </div>
         <div className="btn-div-enrolled">
-          <button className="continue-button">Continue</button>
+          <button className="continue-button"
+          onClick={async ()=>{
+            window.open(course.courseLink, "_blank")}}
+          >Continue</button>
           <button
             className="delete-button"
             onClick={() => {

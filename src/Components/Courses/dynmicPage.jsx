@@ -96,7 +96,7 @@ console.log(userData)
             }
 
             // Update Redux state
-            dispatch(userDetils(updatedUser));
+            dispatch(ActionuserDetils(updatedUser));
             toast.success("Course added successfully!", {
                 position:"top-right",
                 autoClose: 1000,
@@ -169,15 +169,9 @@ console.log(userData)
                         </button>
                         <button
                             type="button"
-                            // href={data.courseLink}
-                            // target="_blank"
                             className="course-link"
                             onClick={async () => {
                                 handleAddCourse();
-                                setTimeout(() => {
-                                    
-                                    window.open(data.courseLink, "_blank"); 
-                                }, 1900);
                             }}
                         >
                             Enroll Now
