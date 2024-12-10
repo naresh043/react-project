@@ -68,11 +68,12 @@ function Signup() {
         };
         dispatch(ActionisUserLogin(true));
         dispatch(ActionuserDetils(userData));
-        toast.success("Signup successful and data sent to server!", {
+        toast.success("Signup successful !", {
           position: "top-right",
           autoClose: 2000,
-          onClose: () => navigate("/"),
+       
         });
+        navigate("/");
       } else {
         throw new Error("Failed to send data to the server.");
       }

@@ -58,7 +58,7 @@
     cursor: pointer;
   }
   
-  .loginBtn {
+  .loginBtn,.GuestBtn {
     width: 60%;
     padding: 10px 0;
     border-radius: 15px;
@@ -68,6 +68,9 @@
     background-color: rgba(255, 94, 0, 0.993);
     color: white;
     font-weight: 600;
+  }
+  .GuestBtn{
+    background-color:#021B79 ;
   }
 
   .registernow {

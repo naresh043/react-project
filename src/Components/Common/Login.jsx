@@ -83,6 +83,25 @@ function LogIn() {
     }
   };
 
+  let handleGuestLogin = () => {
+    const guestUser = {id:1, name: "Guest", email: "guest@example.com",enrolledCourses:[] };
+
+    Cookies.set("AuthToken", true, { expires: 1 / 24 });
+
+    dispatch(ActionuserDetils(guestUser));
+    toast.success("Logged in as Guest!", {
+      position: "top-right",
+      autoClose: 1000,
+      style: {
+        backgroundColor: "#021B79", 
+        color: "white",
+      },
+      onClose: () => navigate("/"),
+    });
+    dispatch(ActionisUserLogin(true));
+    dispatch(ActionisUserLogout(false));
+  };
+
   return (
     <>
       <div className="loginContainer">
@@ -122,6 +141,9 @@ function LogIn() {
               Register now
             </a>
           </p>
+          <button type="button" className="GuestBtn" onClick={handleGuestLogin}>
+            Guest Mode
+          </button>
         </form>
       </div>
     </>
