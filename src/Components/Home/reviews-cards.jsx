@@ -44,7 +44,7 @@ function ReviewsCards() {
 
   // Map the reviews before rendering
   const mappedReviews = reviews.map((val, ind) => (
-    <Card style={{ width: "27rem" }} key={ind}>
+    <Card id="CardContainer" key={ind}>
       <div>
         <img src={val.image} alt="Circular Photo" className="circular-photo" />
       </div>
@@ -84,7 +84,7 @@ function ReviewsCards() {
       <div className="review-main-div">
         <h2 className="testimonilas">Testimonilas</h2>
         <hr />
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+        <div className="reviwCard-Container">
           {mappedReviews}
         </div>
       </div>

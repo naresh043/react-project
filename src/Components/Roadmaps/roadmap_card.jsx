@@ -42,7 +42,7 @@ const RoadmapCourseCard = () => {
   });
 
   const courseCards = filteredCourses.map((course) => (
-    <div className="card" id="course-card" key={course.id}>
+    <div className="Rodamap-card" id="course-card" key={course.id}>
       <div className="road-card-header">
         <img
           src={course.courseRoadmapLogo || "fallback-image.jpg"}

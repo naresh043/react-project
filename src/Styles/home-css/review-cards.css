@@ -49,3 +49,33 @@
     align-items: center;
     margin-top: auto;
   }
+.reviwCard-Container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+ align-content: space-around;
+  gap: 1rem;
+  margin: auto;
+  /* border: 2px solid red; */
+}
+#CardContainer{
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* justify-content: space-between; */
+  /* border: 1px solid #ddd; */
+  /* width: 100%; */
+  padding: 5px 0px ;
+  max-width: 300px;
+  height: auto; /* Remove fixed height for responsiveness */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: left;
+}
+#CardContainer:hover{
+  /* border: 10px solid red; */
+  transform: scale(1.01);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  
+}
