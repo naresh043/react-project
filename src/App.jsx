@@ -29,8 +29,8 @@ function App() {
          <Navbar />
       <Routes>
         {/* Public Routes */}
-        <Route path="/Login" element={<LogIn />} />
-        <Route path="/Signup" element={<Signup />} />
+        <Route path="/Login" element={ isAuthenticated?<Navigate to="/" replace/>:<LogIn />} />
+        <Route path="/Signup" element={ isAuthenticated?<Navigate to="/" replace/>:<Signup />} />
 
         {/* Private Routes */}
         {isAuthenticated ? (
