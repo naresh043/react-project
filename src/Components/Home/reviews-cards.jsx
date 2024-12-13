@@ -11,6 +11,8 @@ function ReviewsCards() {
   const [reviews, setReviews] = useState([]); // To store the fetched reviews
   const [loading, setLoading] = useState(true); // To handle the loading state
   const [error, setError] = useState(null); // To handle any errors
+  const [showPopup, setShowPopup] = useState(false); // To control popup visibility
+  const [feedback, setFeedback] = useState(""); // To store feedback for the popup
 
   useEffect(() => {
     // Fetch function
@@ -34,6 +36,16 @@ function ReviewsCards() {
     fetchReviews(); // Trigger the fetch operation
   }, []); // Empty dependency array means it runs once when the component mounts
 
+  const handleButtonClick = (feedback) => {
+    setFeedback(feedback); // Set the feedback for the popup
+    setShowPopup(true); // Show the popup
+  };
+
+  const closePopup = () => {
+    setShowPopup(false); // Hide the popup
+    setFeedback(""); // Clear the feedback
+  };
+
   if (loading) {
     return <div>{<Loading />}</div>; // Show loading message
   }
@@ -51,7 +63,6 @@ function ReviewsCards() {
       <Card.Body>
         <Card.Title className="card-name">{val.name}</Card.Title>
         <Card.Title>{val.courseName}</Card.Title>
-        <Card.Text>{val.feedback}</Card.Text>
         <Card.Text>
           <b>Difficulty Level:</b> {val.difficultyLevel}
         </Card.Text>
@@ -66,30 +77,43 @@ function ReviewsCards() {
             <b>Date: </b>
             {val.date}
           </Card.Text>
+          
         </div>
+        <p className="ReviewType">
+          ReviewType:{val.reviewType}
+          </p>
         <div className="ReviewButton">
-          <button variant="primary" className="btn_positive">
-            {val.reviewType}
+          <button
+            className="btn_positive"
+            onClick={() => handleButtonClick(val.feedback)}
+          >
+            Read Feedback
           </button>
         </div>
       </Card.Body>
     </Card>
   ));
 
-  // Render the mapped reviews
   return (
     <>
-      {/* <Navbar/> */}
       <Coursel_home />
       <div className="review-main-div">
-        <h2 className="testimonilas">Testimonilas</h2>
+        <h2 className="testimonilas">Testimonials</h2>
         <hr />
-        <div className="reviwCard-Container">
-          {mappedReviews}
-        </div>
+        <div className="reviwCard-Container">{mappedReviews}</div>
       </div>
 
-      {/* <Footer/> */}
+      {/* Popup */}
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup">
+            <p>{feedback}</p>
+            <button onClick={closePopup} className="popup-close-btn">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
