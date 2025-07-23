@@ -1,7 +1,6 @@
 import React from "react";
 import "../../Styles/About-css/about.css";
-import Footer from "../Common/Footer";
-import Navbar from "../Common/Navbar";
+import { Link } from "react-router-dom";
 
 const AboutSection = () => {
   return (
@@ -106,7 +105,7 @@ const AboutSection = () => {
             paths. Join us in shaping the future of education and share your
             feedback to help us enhance the platform!
           </p>
-          <a href="signup.html" className="theme-btn">Get Started</a>
+          <Link  to="/" className="theme-btn">Get Started</Link>
         </div>
       </div>
     </div>

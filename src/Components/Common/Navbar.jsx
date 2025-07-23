@@ -1,41 +1,32 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import "../../Styles/Common-css/Navbar.css"
+import "../../Styles/Common-css/Navbar.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-// toasters 
-import { toast,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Cookies from "js-cookie"; 
-import { ActionisUserLogin,ActionisUserLogout,ActionuserDetils } from "../../Redux/features/searchSlice";
+import axiosInstance from "../../config/axiosConfig";
 
-
-function Navbar() {
+function Navbar({ setAppRunner }) {
   const [isOpen, setIsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
- const location = useLocation()
- const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-   
-   const isUserLogin =useSelector((state)=>state.search?.user?.login)
-   const isUserLogout =useSelector((state)=>state.search?.user?.logout)
-
-   useEffect(() => {
-    const userCookie = Cookies.get("AuthToken");
-    setIsAuthenticated(userCookie === "true");
-  }, [isUserLogin,isUserLogout]);
-  //  assing dispatch to dispatch variable 
+  const location = useLocation();
+  //  assing dispatch to dispatch variable
   const dispatch = useDispatch();
+  const isAuth = useSelector((store) => store.userAuth);
 
   const handleHamburger = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
-    
   };
-  const handleHamburgerLogOut = () => {
-    console.log("LOG OUT")
+  const handleLogOut = async () => {
+    console.log("LOG OUT");
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
+    await axiosInstance.post(
+      `/api/users/logout`,
+      {},
+      { withCredentials: true }
+    );
     // Show toast after logout
-  
     toast.success("Logout successful!", {
       position: "top-right",
       autoClose: 1000,
@@ -44,12 +35,8 @@ function Navbar() {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
-      // onClose:dispatch(isUserLogout(true))
     });
-    Cookies.remove("AuthToken")
-    dispatch(ActionisUserLogin(true));
-    dispatch(ActionisUserLogout(null));
-    dispatch(ActionuserDetils ([]));
+    setAppRunner((pre) => !pre);
   };
 
   const handleAccountMouseEnter = () => {
@@ -75,75 +62,75 @@ function Navbar() {
               menuOpen ? "linksContaineractive" : ""
             }`}
           >
-            {isAuthenticated && (
+            {isAuth && (
               <>
-              <li>
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  isActive ? "active link" : "link"
-                }
-                onClick={handleHamburger}
-              >
-                <span>
-                  <i className="fa-solid fa-house navLinkIcon"></i>Home
-                </span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/courses"
-                className={({ isActive }) =>
-                  isActive ? "active link" : "link"
-                }
-                onClick={handleHamburger}
-              >
-                <span> 
-                    <i className="fa-solid fa-book-open  navLinkIcon"></i>
-                    Courses
-                  </span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/roadmap"
-                className={({ isActive }) =>
-                  isActive ? "active link" : "link"
-                }
-                onClick={handleHamburger}
-              >
-              <span>
-                    <i className="fa-solid fa-route navLinkIcon" ></i>
-                    Roadmap
-                  </span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/about"
-                className={({ isActive }) =>
-                  isActive ? "active link" : "link"
-                }
-                onClick={handleHamburger}
-              >
-                <span>
-                <i className="fa-solid fa-address-card"></i> About
-                  </span>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/enrollecourses"
-                className={({ isActive }) =>
-                  isActive ? "active link" : "link"
-                }
-                onClick={handleHamburger}
-              >
-                <span>
-                <i className="fa-solid fa-graduation-cap"></i> Enrolled
-                  </span>
-              </NavLink>
-            </li>
+                <li>
+                  <NavLink
+                    to="/"
+                    className={({ isActive }) =>
+                      isActive ? "active link" : "link"
+                    }
+                    onClick={handleHamburger}
+                  >
+                    <span>
+                      <i className="fa-solid fa-house navLinkIcon"></i>Home
+                    </span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/courses"
+                    className={({ isActive }) =>
+                      isActive ? "active link" : "link"
+                    }
+                    onClick={handleHamburger}
+                  >
+                    <span>
+                      <i className="fa-solid fa-book-open  navLinkIcon"></i>
+                      Courses
+                    </span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/roadmap"
+                    className={({ isActive }) =>
+                      isActive ? "active link" : "link"
+                    }
+                    onClick={handleHamburger}
+                  >
+                    <span>
+                      <i className="fa-solid fa-route navLinkIcon"></i>
+                      Roadmap
+                    </span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/about"
+                    className={({ isActive }) =>
+                      isActive ? "active link" : "link"
+                    }
+                    onClick={handleHamburger}
+                  >
+                    <span>
+                      <i className="fa-solid fa-address-card"></i> About
+                    </span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/enrolledcourses"
+                    className={({ isActive }) =>
+                      isActive ? "active link" : "link"
+                    }
+                    onClick={handleHamburger}
+                  >
+                    <span>
+                      <i className="fa-solid fa-graduation-cap"></i> Enrolled
+                    </span>
+                  </NavLink>
+                </li>
               </>
             )}
             <li className="Account-cont">
@@ -152,7 +139,8 @@ function Navbar() {
                 onMouseEnter={handleAccountMouseEnter}
                 onMouseLeave={handleAccountMouseLeave}
               >
-               <i className="fa-solid fa-user"></i> <i className="fa-solid fa-caret-down"></i>
+                <i className="fa-solid fa-user"></i>{" "}
+                <i className="fa-solid fa-caret-down"></i>
               </div>
               {isOpen && (
                 <ul
@@ -160,22 +148,27 @@ function Navbar() {
                   onMouseEnter={handleAccountMouseEnter}
                   onMouseLeave={handleAccountMouseLeave}
                 >
-                { isAuthenticated ?<li>
-                    <Link to="/Login" >
-                    <button onClick={handleHamburgerLogOut} className="logoutbtn">
-                      Logout
-                    </button>
-                    </Link>
-                  </li>: location?.pathname !=="/Login" ? <li>
-                    <Link to="/Login" onClick={handleHamburger}>
-                      Login
-                    </Link>
-                  </li>:
-                  <li>
-                    <Link to="/Signup" onClick={handleHamburger}>
-                      Signup
-                    </Link>
-                  </li>}
+                  {isAuth ? (
+                    <li>
+                      <Link to="/Login">
+                        <button onClick={handleLogOut} className="logoutbtn">
+                          Logout
+                        </button>
+                      </Link>
+                    </li>
+                  ) : location?.pathname !== "/Login" ? (
+                    <li>
+                      <Link to="/Login" onClick={handleHamburger}>
+                        Login
+                      </Link>
+                    </li>
+                  ) : (
+                    <li>
+                      <Link to="/Signup" onClick={handleHamburger}>
+                        Signup
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               )}
             </li>
@@ -188,7 +181,6 @@ function Navbar() {
         </div>
       </nav>
     </header>
-    
   );
 }
 

@@ -1,53 +1,86 @@
-import { useState,useEffect } from "react";
-import Navbar from "./Components/Common/Navbar";
-import Footer from "./Components/Common/Footer";
-import ReviewsCards from "./Components/Home/reviews-cards";
+import { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import axiosInstance from "./config/axiosConfig";
+import { useDispatch, useSelector } from "react-redux";
+
+import { BASE_URL } from "./config/Constants";
 import Courses from "./Components/Courses/courses";
+import ReviewsCards from "./Components/Home/reviews-cards";
+import DynamicPage from "./Components/Courses/dynmicPage";
 import RoadmapCourseCard from "./Components/Roadmaps/roadmap_card";
 import AboutSection from "./Components/About/about";
-import EnrolledCourses from "./Components/EnrolledCourses/enrolled"
-import { BrowserRouter, Route, Routes,Navigate  } from "react-router-dom";
-import DynamicPage from "./Components/Courses/dynmicPage";
+import EnrolledCourses from "./Components/EnrolledCourses/enrolled";
 import LogIn from "./Components/Common/Login";
-import Signup from "./Components/Common/SiginUp";
-import { useSelector } from "react-redux";
-import Cookies from "js-cookie"; 
+import Layout from "./Layout";
+import { addAuth } from "./Redux/features/authSlice";
 
-// toasters 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 function App() {
-  const isUserLogin =useSelector((state)=>state.search?.user?.login)
-  const isUserLogout =useSelector((state)=>state.search?.user?.logout)
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  useEffect(() => {
-    const userCookie = Cookies.get("AuthToken");
-    setIsAuthenticated(userCookie === "true");
-  }, [isUserLogin,isUserLogout]);
-  return (
-      <>
-         <Navbar />
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/Login" element={ isAuthenticated?<Navigate to="/" replace/>:<LogIn />} />
-        <Route path="/Signup" element={ isAuthenticated?<Navigate to="/" replace/>:<Signup />} />
+  const [loading, setLoading] = useState(true);
+  const [appRunner, setAppRunner] = useState(true);
+  const isAuth = useSelector((state) => state?.userAuth ?? false);
+  const {courseId}=useParams()
 
-        {/* Private Routes */}
-        {isAuthenticated ? (
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const checkAuth = async () => {
+      try {
+        const response = await axiosInstance.get(`${BASE_URL}/api/auth/`);
+        if (cancelled) return;
+        dispatch(addAuth(!!response?.data?.authenticated));
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        if (!cancelled) {
+          dispatch(addAuth(false));
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    checkAuth();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [appRunner, dispatch]);
+  console.log("auth", isAuth);
+  console.log("appRunner", appRunner);
+
+  if (loading) return <div>Loading...</div>; // Optional loading state
+
+  return (
+    <>
+      <Routes>
+        {!isAuth ? (
           <>
-            <Route path="/" element={<ReviewsCards />} />
-            <Route path="/courses" element={<Courses />} />
-            <Route path="/roadmap" element={<RoadmapCourseCard />} />
-            <Route path="/about" element={<AboutSection />} />
-            <Route path="/enrollecourses" element={<EnrolledCourses />} />
-            <Route path="/courses/:id" element={<DynamicPage />} />
+            {/* Redirect all routes to login if not authenticated */}
+            <Route
+              path="/login"
+              element={<LogIn setAppRunner={setAppRunner} />}
+            />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         ) : (
-          <Route path="*" element={<Navigate to="/Login" replace />} />
+          <>
+            <Route path="/" element={<Layout setAppRunner={setAppRunner} />}>
+              <Route index element={<ReviewsCards />} />
+              <Route path="courses" element={<Courses />} />
+              <Route path="/courses/:courseId" element={<DynamicPage />} />
+              <Route path="roadmap" element={<RoadmapCourseCard />} />
+              <Route path="about" element={<AboutSection />} />
+              <Route path="enrolledcourses" element={<EnrolledCourses />} />
+            </Route>
+            {/* Redirect login route to home if authenticated */}
+            <Route path="/login" element={<Navigate to="/" replace />} />
+          </>
         )}
       </Routes>
-      <Footer />
-      <ToastContainer />
     </>
   );
 }

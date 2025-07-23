@@ -1,19 +1,19 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../config/axiosConfig";
 import "../../Styles/Courses/courses.css";
 import Loading from "../Common/loading";
 import { useDispatch, useSelector } from "react-redux";
 // this is the import the action from store
-import { ActionuserDetils } from "../../Redux/features/searchSlice";
+// import { ActionuserDetils } from "../../Redux/features/searchSlice";
 import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 
 
 const DynamicPage = () => {
     const navigate = useNavigate();
-    let { id } = useParams();
+    let { courseId } = useParams();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -22,8 +22,9 @@ const DynamicPage = () => {
     useEffect(() => {
         const fetchedData = async () => {
             try {
-                const { data } = await axios.get(`https://giant-ambitious-danger.glitch.me/coursesdata/${id}`);
-                setData(data);
+                const response = await axiosInstance.get(`/api/courses/${courseId}`);
+                // console.log(response?.data?.data)
+                setData(response?.data?.data);
                 setLoading(false);
             } catch (err) {
                 setError("Error occurred while fetching data.");
@@ -32,10 +33,10 @@ const DynamicPage = () => {
             }
         };
 
-        if (id) {
+        if (courseId) {
             fetchedData();
         }
-    }, [id]);
+    }, [courseId]);
 
     if (loading) {
         return <div><Loading /></div>;
@@ -84,7 +85,7 @@ const DynamicPage = () => {
             };
 
             // Send the updated user data to the server
-            const response = await axios.put(
+            const response = await axiosInstance.put(
                 `https://giant-ambitious-danger.glitch.me/credentials/${userData.id}`,
                 updatedUser,
                 { headers: { "Content-Type": "application/json" } }

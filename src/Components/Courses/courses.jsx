@@ -1,40 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setSearchQuery } from "../../Redux/features/searchSlice";
 import Loading from "../Common/loading";
 import "../../Styles/Courses/courses.css";
-import Navbar from "../Common/Navbar";
-import Footer from "../Common/Footer";
 import { Link } from "react-router-dom";
+import axiosInstance from "../../config/axiosConfig";
 
 function Courses() {
-  const [reviews, setReviews] = useState([]); // Store fetched reviews
+  const [courses, setCourses] = useState([]); // Store fetched reviews
   const [loading, setLoading] = useState(true); // Handle loading state
   const [error, setError] = useState(null); // Handle errors
   const [selectedCourse, setSelectedCourse] = useState(null); // Track the selected course
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchText,setSearchText]=useState("")
   const dispatch = useDispatch();
-  const searchQuery = useSelector((state) => state.search.query); // Get the search query from the store
   
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const response = await fetch(
-          "https://giant-ambitious-danger.glitch.me/coursesdata"
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch reviews");
-        }
-        const data = await response.json();
-        setReviews(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+  const fetchCourses = async () => {
+    try {
+      const response = await axiosInstance.get(`/api/courses/`)
+      console.log(response?.data?.data)
+      setCourses(response?.data?.data);
+      if (!response) {
+        throw new Error("Failed to fetch reviews");
       }
-    };
-
-    fetchReviews();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchCourses();
   }, []);
 
   if (loading) {
@@ -47,10 +42,10 @@ function Courses() {
 
   // Filter reviews based on the search query
   // Filter reviews based on search query and category
-  const filteredReviews = reviews.filter((val) => {
+  const filteredReviews = courses.filter((val) => {
     const matchesSearch = val.courseName
       .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+      .includes(searchText?.toLowerCase());
     const matchesCategory =
       selectedCategory === "" || val.category === selectedCategory;
     return matchesSearch && matchesCategory;
@@ -84,8 +79,8 @@ function Courses() {
                     type="text"
                     placeholder="Search courses..."
                     className="search-input"
-                    value={searchQuery}
-                    onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
                   />
                   <span className="search_icon">
                     <i className="fa-solid fa-magnifying-glass"></i>
@@ -117,7 +112,7 @@ function Courses() {
                         <b>Duration: </b>
                         {val.duration}
                       </p>
-                      <Link to={`/courses/${ind+1}`}>
+                      <Link to={`/courses/${val?._id}`}>
                         <button
                           className="overview-btn"
                           onClick={() => {

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/Roadmap-css/roadmap.css";
 import Loading from "../Common/loading";
-import Navbar from "../Common/Navbar";
-import Footer from "../Common/Footer";
+import axiosInstance from "../../config/axiosConfig";
 
 const RoadmapCourseCard = () => {
   const [courses, setCourses] = useState([]);
@@ -15,13 +14,11 @@ const RoadmapCourseCard = () => {
     const fetchData = async () => {
       setLoading(true); // Start loading
       try {
-        const response = await fetch(
-          "https://giant-ambitious-danger.glitch.me/roadmapdata"
-        );
-        if (!response.ok)
+        const response = await axiosInstance.get('/api/courseroadmap/')
+        console.log(response?.data?.data)
+        setCourses(response?.data?.data);
+        if (!response)
           throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        setCourses(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -42,7 +39,7 @@ const RoadmapCourseCard = () => {
   });
 
   const courseCards = filteredCourses.map((course) => (
-    <div className="Rodamap-card" id="course-card" key={course.id}>
+    <div className="Rodamap-card" id="course-card" key={course._id}>
       <div className="road-card-header">
         <img
           src={course.courseRoadmapLogo || "fallback-image.jpg"}

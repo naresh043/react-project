@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css"; // Import the CSS for toast
 import "../../Styles/Common-css/SiginUp.css";
 import { useDispatch } from "react-redux"; // Import useDispatch
 // import { userDetils } from "../../Redux/features/searchSlice";
-import { ActionisUserLogin,ActionuserDetils } from "../../Redux/features/searchSlice";
+// import { ActionisUserLogin,ActionuserDetils } from "../../Redux/features/searchSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"; // Import axios
 

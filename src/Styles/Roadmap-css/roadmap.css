@@ -81,7 +81,7 @@
   color: white;
   text-decoration: none;
   padding: 10px 20px;
-  background-image: linear-gradient(to right, #FDC830, #FF4E50);
+  background-image: linear-gradient(to right, #fdc830, #ff4e50);
   border: none;
   border-radius: 5px;
   font-size: 1rem;
@@ -100,15 +100,16 @@
   color: white;
 }
 
-.vivewroadmapbtn a:hover{
+.vivewroadmapbtn a:hover {
   color: black;
 }
-.vivewroadmapbtn a i{
+.vivewroadmapbtn a i {
   padding-left: 10px;
 }
 /* Search CSS */
 .raodmap_header {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
