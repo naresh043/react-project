@@ -14,6 +14,7 @@ import EnrolledCourses from "./Components/EnrolledCourses/enrolled";
 import LogIn from "./Components/Common/Login";
 import Layout from "./Layout";
 import { addAuth } from "./Redux/features/authSlice";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -81,6 +82,7 @@ function App() {
           </>
         )}
       </Routes>
+      <ToastContainer/>
     </>
   );
 }
