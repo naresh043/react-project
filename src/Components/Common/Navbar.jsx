@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import "../../Styles/Common-css/Navbar.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axiosInstance from "../../config/axiosConfig";
+import { addAuth } from "../../Redux/features/authSlice";
 
-function Navbar({ setAppRunner }) {
+function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
   const location = useLocation();
-  //  assing dispatch to dispatch variable
+
   const dispatch = useDispatch();
   const isAuth = useSelector((store) => store.userAuth);
+  const isUser = useSelector((store) => store.user);
 
   const handleHamburger = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
@@ -36,7 +38,7 @@ function Navbar({ setAppRunner }) {
       draggable: true,
       progress: undefined,
     });
-    setAppRunner((pre) => !pre);
+    dispatch(addAuth(null));
   };
 
   const handleAccountMouseEnter = () => {
@@ -139,7 +141,11 @@ function Navbar({ setAppRunner }) {
                 onMouseEnter={handleAccountMouseEnter}
                 onMouseLeave={handleAccountMouseLeave}
               >
-                <i className="fa-solid fa-user"></i>{" "}
+                <img
+                  src={isUser?.photoURL || "/default-avatar.png"}
+                  alt="Profile"
+                  className="profile-image"
+                />
                 <i className="fa-solid fa-caret-down"></i>
               </div>
               {isOpen && (
@@ -149,22 +155,45 @@ function Navbar({ setAppRunner }) {
                   onMouseLeave={handleAccountMouseLeave}
                 >
                   {isAuth ? (
-                    <li>
-                      <Link to="/Login">
+                    <>
+                      <li>
+                        <Link
+                          to="/me"
+                          className="link"
+                          onClick={handleHamburger}
+                        >
+                          <i className="fa-solid fa-user"></i>
+                          Profile
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          to="/account-settings"
+                          className="link"
+                          onClick={handleHamburger}
+                        >
+                          <i className="fa-solid fa-cog"></i>
+                          Account Settings
+                        </Link>
+                      </li>
+                      <li>
                         <button onClick={handleLogOut} className="logoutbtn">
+                          <i className="fa-solid fa-sign-out-alt" id="logoutIcon"></i>
                           Logout
                         </button>
-                      </Link>
-                    </li>
+                      </li>
+                    </>
                   ) : location?.pathname !== "/Login" ? (
                     <li>
                       <Link to="/Login" onClick={handleHamburger}>
+                        <i className="fa-solid fa-sign-in-alt"></i>
                         Login
                       </Link>
                     </li>
                   ) : (
                     <li>
                       <Link to="/Signup" onClick={handleHamburger}>
+                        <i className="fa-solid fa-user-plus"></i>
                         Signup
                       </Link>
                     </li>

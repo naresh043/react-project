@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Router } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axiosInstance from "./config/axiosConfig";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,29 +11,46 @@ import DynamicPage from "./Components/Courses/dynmicPage";
 import RoadmapCourseCard from "./Components/Roadmaps/roadmap_card";
 import AboutSection from "./Components/About/about";
 import EnrolledCourses from "./Components/EnrolledCourses/enrolled";
+import ProfileComponent from "./Components/About/ProfileComponent";
 import LogIn from "./Components/Common/Login";
+
+
 import Layout from "./Layout";
 import { addAuth } from "./Redux/features/authSlice";
 import { ToastContainer } from "react-toastify";
+import { addUser } from "./Redux/features/userSlice";
 
 function App() {
-  const [loading, setLoading] = useState(true);
-  const [appRunner, setAppRunner] = useState(true);
   const isAuth = useSelector((state) => state?.userAuth ?? false);
-  const {courseId}=useParams()
-
+  const isUser = useSelector((store) => store.user);
+  const [loading, setLoading] = useState(true);
+  const { courseId } = useParams();
   const dispatch = useDispatch();
 
+  const getProfile = async () => {
+    try {
+      const response = await axiosInstance.get("/api/users/profile");
+      const userData = response?.data?.data;
+      if (userData) {
+        dispatch(addUser(userData));
+      } else {
+        console.warn("User profile data is empty");
+      }
+    } catch (err) {
+      console.error("Failed to fetch user profile:", err.message);
+    }
+  };
   useEffect(() => {
     let cancelled = false;
 
     const checkAuth = async () => {
       try {
         const response = await axiosInstance.get(`${BASE_URL}/api/auth/`);
-        if (cancelled) return;
-        dispatch(addAuth(!!response?.data?.authenticated));
+        if (!cancelled) {
+          dispatch(addAuth(!!response?.data?.authenticated));
+        }
       } catch (error) {
-        console.error("Error checking authentication:", error);
+        console.error("Error checking authentication:", error.message);
         if (!cancelled) {
           dispatch(addAuth(false));
         }
@@ -44,14 +61,16 @@ function App() {
       }
     };
 
-    checkAuth();
+    // Call only if not authenticated or user not in store
+    if (!isAuth) checkAuth();
+    if (!isUser) getProfile();
 
     return () => {
       cancelled = true;
     };
-  }, [appRunner, dispatch]);
-  console.log("auth", isAuth);
-  console.log("appRunner", appRunner);
+  }, [ dispatch, isAuth, isUser]);
+
+  // console.log("appRunner", appRunner);
 
   if (loading) return <div>Loading...</div>; // Optional loading state
 
@@ -63,26 +82,27 @@ function App() {
             {/* Redirect all routes to login if not authenticated */}
             <Route
               path="/login"
-              element={<LogIn setAppRunner={setAppRunner} />}
+              element={<LogIn  />}
             />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         ) : (
           <>
-            <Route path="/" element={<Layout setAppRunner={setAppRunner} />}>
+            <Route path="/" element={<Layout />}>
               <Route index element={<ReviewsCards />} />
               <Route path="courses" element={<Courses />} />
               <Route path="/courses/:courseId" element={<DynamicPage />} />
               <Route path="roadmap" element={<RoadmapCourseCard />} />
               <Route path="about" element={<AboutSection />} />
               <Route path="enrolledcourses" element={<EnrolledCourses />} />
+              <Route path="/me" element={<ProfileComponent/>}/>
             </Route>
             {/* Redirect login route to home if authenticated */}
             <Route path="/login" element={<Navigate to="/" replace />} />
           </>
         )}
       </Routes>
-      <ToastContainer/>
+      <ToastContainer />
     </>
   );
 }

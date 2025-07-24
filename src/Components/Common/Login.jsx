@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../../Redux/features/userSlice";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../config/axiosConfig";
-function LogIn({ setAppRunner }) {
+function LogIn() {
   let [userData, setuserData] = useState({
     email: "bhanu@example.com",
     password: "Bhanu@143",
@@ -67,7 +67,6 @@ function LogIn({ setAppRunner }) {
         autoClose: 1000,
       });
       setTimeout(() => navigate("/"), 1000);
-      setAppRunner((pre)=>!pre);
     } catch (error) {
       // Error toast for API issues
       toast.error(`Error fetching user data: ${error.message}`, {
