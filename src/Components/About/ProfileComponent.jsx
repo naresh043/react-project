@@ -1,60 +1,94 @@
 import React, { useState, useEffect } from "react";
-import "../../Styles/About-css/ProfileComponent.css"
+import "../../Styles/About-css/ProfileComponent.css";
+import { useSelector } from "react-redux";
+import axiosInstance from "../../config/axiosConfig";
+import { format } from "date-fns";
 
 function ProfileComponent() {
-  // Mock user data based on your schema with additional profile information
-  const [userData, setUserData] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    photoURL:
-      "https://t3.ftcdn.net/jpg/07/24/59/76/240_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg",
-    createdAt: "2024-01-15T10:30:00.000Z",
-    updatedAt: "2024-07-20T14:45:00.000Z",
-    // Additional profile information
-    phone: "+1 234 567 8900",
-    location: "New York, USA",
-    bio: "Passionate learner exploring new technologies and skills. Always eager to take on challenging courses and expand my knowledge base.",
-    dateOfBirth: "1995-03-15",
-    gender: "Male",
-    profession: "Software Developer",
-    experience: "3 years",
-    interests: [
-      "Web Development",
-      "Machine Learning",
-      "UI/UX Design",
-      "Data Science",
-    ],
-    socialLinks: {
-      linkedin: "https://linkedin.com/in/johndoe",
-      github: "https://github.com/johndoe",
-      twitter: "https://twitter.com/johndoe",
-    },
-    stats: {
-      coursesEnrolled: 12,
-      coursesCompleted: 8,
-      certificatesEarned: 6,
-      studyHours: 245,
-    },
-  });
-
+  const userData = useSelector((store) => store.user);
+  const [isUser, setIsUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({});
 
   useEffect(() => {
-    setEditData(userData);
+    if (userData) {
+      const formattedUser = {
+        ...userData,
+        dateOfBirth: format(new Date(userData?.dateOfBirth), "yyyy-MM-dd"),
+        interests: userData.interests || [],
+        socialLinks: userData.socialLinks || {
+          linkedin: "",
+          github: "",
+          twitter: "",
+        },
+      };
+
+      setIsUser(formattedUser);
+      setEditData(formattedUser);
+    }
   }, [userData]);
+
+  console.log(editData, "editing data");
 
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    setUserData(editData);
-    setIsEditing(false);
+  // Helper function to clean data before sending to backend
+  const cleanDataForSubmission = (data) => {
+    const cleanedData = { ...data };
+    
+    // Remove empty social links to avoid validation errors
+    if (cleanedData.socialLinks) {
+      Object.keys(cleanedData.socialLinks).forEach(key => {
+        if (!cleanedData.socialLinks[key] || cleanedData.socialLinks[key].trim() === '') {
+          delete cleanedData.socialLinks[key];
+        }
+      });
+      
+      // If no social links remain, remove the entire object
+      if (Object.keys(cleanedData.socialLinks).length === 0) {
+        delete cleanedData.socialLinks;
+      }
+    }
+    
+    // Remove empty photoURL to avoid validation errors
+    if (cleanedData.photoURL && cleanedData.photoURL.trim() === '') {
+      delete cleanedData.photoURL;
+    }
+    
+    // Filter out empty interests
+    if (cleanedData.interests) {
+      cleanedData.interests = cleanedData.interests.filter(interest => 
+        interest && interest.trim() !== ''
+      );
+    }
+    
+    return cleanedData;
+  };
+
+  const handleSave = async () => {
+    try {
+      const cleanedData = cleanDataForSubmission(editData);
+      const response = await axiosInstance.patch(
+        `/api/users/${userData?.id}`,
+        cleanedData
+      );
+      console.log("Profile updated:", response);
+      
+      // Update the local state with the response data or cleaned data
+      const updatedUser = response.data?.user || cleanedData;
+      setIsUser(updatedUser);
+      setEditData(updatedUser);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      // You might want to show a user-friendly error message here
+    }
   };
 
   const handleCancel = () => {
-    setEditData(userData);
+    setEditData(isUser);
     setIsEditing(false);
   };
 
@@ -76,36 +110,41 @@ function ProfileComponent() {
   };
 
   const handleInterestChange = (index, value) => {
-    const newInterests = [...editData.interests];
-    newInterests[index] = value;
+    const updatedInterests = [...(editData?.interests || [])];
+    updatedInterests[index] = value;
     setEditData((prev) => ({
       ...prev,
-      interests: newInterests,
+      interests: updatedInterests,
     }));
   };
 
   const addInterest = () => {
     setEditData((prev) => ({
       ...prev,
-      interests: [...prev.interests, ""],
+      interests: [...(prev?.interests || []), ""],
     }));
   };
 
   const removeInterest = (index) => {
-    const newInterests = editData.interests.filter((_, i) => i !== index);
+    const updated = (editData.interests || []).filter((_, i) => i !== index);
     setEditData((prev) => ({
       ...prev,
-      interests: newInterests,
+      interests: updated,
     }));
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return "Not specified";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
     });
   };
+
+  if (!isUser) {
+    return <div className="profile-loading">Loading profile...</div>;
+  }
 
   return (
     <div className="profile-container">
@@ -114,14 +153,17 @@ function ProfileComponent() {
         <div className="profile-header">
           <div className="profile-avatar-section">
             <img
-              src={isEditing ? editData.photoURL : userData.photoURL}
+              src={isUser?.photoURL || "/default-avatar.png"}
               alt="Profile"
               className="profile-avatar"
+              onError={(e) => {
+                e.target.src = "/default-avatar.png";
+              }}
             />
             {isEditing && (
               <input
                 type="url"
-                value={editData.photoURL}
+                value={editData?.photoURL || ""}
                 onChange={(e) => handleInputChange("photoURL", e.target.value)}
                 placeholder="Profile Image URL"
                 className="photo-url-input"
@@ -133,43 +175,46 @@ function ProfileComponent() {
             {isEditing ? (
               <input
                 type="text"
-                value={editData.name}
+                value={editData?.name || ""}
                 onChange={(e) => handleInputChange("name", e.target.value)}
                 className="edit-input name-input"
+                placeholder="Your Name"
               />
             ) : (
-              <h1 className="profile-name">{userData.name}</h1>
+              <h1 className="profile-name">{isUser?.name}</h1>
             )}
 
-            <p className="profile-email">
+            <div className="profile-email">
               <i className="fas fa-envelope"></i>
               {isEditing ? (
                 <input
                   type="email"
-                  value={editData.email}
+                  value={editData?.email || ""}
                   onChange={(e) => handleInputChange("email", e.target.value)}
-                  className="edit-input"
+                  className="edit-input header-edit-input"
+                  placeholder="your.email@example.com"
                 />
               ) : (
-                userData.email
+                <span>{isUser?.email}</span>
               )}
-            </p>
+            </div>
 
-            <p className="profile-profession">
+            <div className="profile-profession">
               <i className="fas fa-briefcase"></i>
               {isEditing ? (
                 <input
                   type="text"
-                  value={editData.profession}
+                  value={editData?.profession || ""}
                   onChange={(e) =>
                     handleInputChange("profession", e.target.value)
                   }
-                  className="edit-input"
+                  className="edit-input header-edit-input"
+                  placeholder="Your Profession"
                 />
               ) : (
-                userData.profession
+                <span>{isUser?.profession}</span>
               )}
-            </p>
+            </div>
           </div>
 
           <div className="profile-actions">
@@ -197,7 +242,7 @@ function ProfileComponent() {
               <i className="fas fa-book"></i>
             </div>
             <div className="stat-info">
-              <h3>{userData.stats.coursesEnrolled}</h3>
+              <h3>{isUser?.stats?.coursesEnrolled || 0}</h3>
               <p>Courses Enrolled</p>
             </div>
           </div>
@@ -207,7 +252,7 @@ function ProfileComponent() {
               <i className="fas fa-graduation-cap"></i>
             </div>
             <div className="stat-info">
-              <h3>{userData.stats.coursesCompleted}</h3>
+              <h3>{isUser?.stats?.coursesCompleted || 0}</h3>
               <p>Completed</p>
             </div>
           </div>
@@ -217,7 +262,7 @@ function ProfileComponent() {
               <i className="fas fa-certificate"></i>
             </div>
             <div className="stat-info">
-              <h3>{userData.stats.certificatesEarned}</h3>
+              <h3>{isUser?.stats?.certificatesEarned || 0}</h3>
               <p>Certificates</p>
             </div>
           </div>
@@ -227,7 +272,7 @@ function ProfileComponent() {
               <i className="fas fa-clock"></i>
             </div>
             <div className="stat-info">
-              <h3>{userData.stats.studyHours}</h3>
+              <h3>{isUser?.stats?.studyHours || 0}</h3>
               <p>Study Hours</p>
             </div>
           </div>
@@ -247,12 +292,13 @@ function ProfileComponent() {
                 {isEditing ? (
                   <input
                     type="tel"
-                    value={editData.phone}
+                    value={editData?.phone || ""}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
                     className="edit-input"
+                    placeholder="Your phone number"
                   />
                 ) : (
-                  <span>{userData.phone}</span>
+                  <span>{isUser?.phone || "Not provided"}</span>
                 )}
               </div>
 
@@ -261,14 +307,15 @@ function ProfileComponent() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={editData.location}
+                    value={editData?.location || ""}
                     onChange={(e) =>
                       handleInputChange("location", e.target.value)
                     }
                     className="edit-input"
+                    placeholder="Your location"
                   />
                 ) : (
-                  <span>{userData.location}</span>
+                  <span>{isUser?.location || "Not provided"}</span>
                 )}
               </div>
 
@@ -277,14 +324,14 @@ function ProfileComponent() {
                 {isEditing ? (
                   <input
                     type="date"
-                    value={editData.dateOfBirth}
+                    value={editData?.dateOfBirth || ""}
                     onChange={(e) =>
                       handleInputChange("dateOfBirth", e.target.value)
                     }
                     className="edit-input"
                   />
                 ) : (
-                  <span>{formatDate(userData.dateOfBirth)}</span>
+                  <span>{formatDate(isUser?.dateOfBirth)}</span>
                 )}
               </div>
 
@@ -292,19 +339,20 @@ function ProfileComponent() {
                 <label>Gender</label>
                 {isEditing ? (
                   <select
-                    value={editData.gender}
+                    value={editData?.gender || ""}
                     onChange={(e) =>
                       handleInputChange("gender", e.target.value)
                     }
                     className="edit-input"
                   >
+                    <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                     <option value="Prefer not to say">Prefer not to say</option>
                   </select>
                 ) : (
-                  <span>{userData.gender}</span>
+                  <span>{isUser?.gender || "Not specified"}</span>
                 )}
               </div>
 
@@ -313,20 +361,21 @@ function ProfileComponent() {
                 {isEditing ? (
                   <input
                     type="text"
-                    value={editData.experience}
+                    value={editData?.experience || ""}
                     onChange={(e) =>
                       handleInputChange("experience", e.target.value)
                     }
                     className="edit-input"
+                    placeholder="Your experience level"
                   />
                 ) : (
-                  <span>{userData.experience}</span>
+                  <span>{isUser?.experience || "Not specified"}</span>
                 )}
               </div>
 
               <div className="info-item">
                 <label>Member Since</label>
-                <span>{formatDate(userData.createdAt)}</span>
+                <span>{formatDate(isUser?.createdAt)}</span>
               </div>
             </div>
           </div>
@@ -339,13 +388,14 @@ function ProfileComponent() {
             </h2>
             {isEditing ? (
               <textarea
-                value={editData.bio}
+                value={editData?.bio || ""}
                 onChange={(e) => handleInputChange("bio", e.target.value)}
                 className="edit-textarea"
                 rows="4"
+                placeholder="Tell us about yourself..."
               />
             ) : (
-              <p className="bio-text">{userData.bio}</p>
+              <p className="bio-text">{isUser?.bio || "No bio available"}</p>
             )}
           </div>
 
@@ -358,7 +408,7 @@ function ProfileComponent() {
             <div className="interests-container">
               {isEditing ? (
                 <div className="interests-edit">
-                  {editData.interests.map((interest, index) => (
+                  {(editData?.interests || []).map((interest, index) => (
                     <div key={index} className="interest-edit-item">
                       <input
                         type="text"
@@ -367,26 +417,36 @@ function ProfileComponent() {
                           handleInterestChange(index, e.target.value)
                         }
                         className="edit-input"
+                        placeholder="Interest"
                       />
                       <button
                         onClick={() => removeInterest(index)}
                         className="remove-interest-btn"
+                        type="button"
                       >
                         <i className="fas fa-times"></i>
                       </button>
                     </div>
                   ))}
-                  <button onClick={addInterest} className="add-interest-btn">
+                  <button
+                    onClick={addInterest}
+                    className="add-interest-btn"
+                    type="button"
+                  >
                     <i className="fas fa-plus"></i> Add Interest
                   </button>
                 </div>
               ) : (
                 <div className="interests-list">
-                  {userData.interests.map((interest, index) => (
-                    <span key={index} className="interest-tag">
-                      {interest}
-                    </span>
-                  ))}
+                  {(isUser?.interests || []).length > 0 ? (
+                    isUser.interests.map((interest, index) => (
+                      <span key={index} className="interest-tag">
+                        {interest}
+                      </span>
+                    ))
+                  ) : (
+                    <p>No interests added yet</p>
+                  )}
                 </div>
               )}
             </div>
@@ -405,20 +465,23 @@ function ProfileComponent() {
                 {isEditing ? (
                   <input
                     type="url"
-                    value={editData.socialLinks.linkedin}
+                    value={editData?.socialLinks?.linkedin || ""}
                     onChange={(e) =>
                       handleSocialLinkChange("linkedin", e.target.value)
                     }
                     className="edit-input"
+                    placeholder="https://linkedin.com/in/yourprofile"
                   />
-                ) : (
+                ) : isUser?.socialLinks?.linkedin ? (
                   <a
-                    href={userData.socialLinks.linkedin}
+                    href={isUser.socialLinks.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {userData.socialLinks.linkedin}
+                    {isUser.socialLinks.linkedin}
                   </a>
+                ) : (
+                  <span>Not provided</span>
                 )}
               </div>
 
@@ -428,20 +491,23 @@ function ProfileComponent() {
                 {isEditing ? (
                   <input
                     type="url"
-                    value={editData.socialLinks.github}
+                    value={editData?.socialLinks?.github || ""}
                     onChange={(e) =>
                       handleSocialLinkChange("github", e.target.value)
                     }
                     className="edit-input"
+                    placeholder="https://github.com/yourusername"
                   />
-                ) : (
+                ) : isUser?.socialLinks?.github ? (
                   <a
-                    href={userData.socialLinks.github}
+                    href={isUser.socialLinks.github}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {userData.socialLinks.github}
+                    {isUser.socialLinks.github}
                   </a>
+                ) : (
+                  <span>Not provided</span>
                 )}
               </div>
 
@@ -451,20 +517,23 @@ function ProfileComponent() {
                 {isEditing ? (
                   <input
                     type="url"
-                    value={editData.socialLinks.twitter}
+                    value={editData?.socialLinks?.twitter || ""}
                     onChange={(e) =>
                       handleSocialLinkChange("twitter", e.target.value)
                     }
                     className="edit-input"
+                    placeholder="https://twitter.com/yourusername"
                   />
-                ) : (
+                ) : isUser?.socialLinks?.twitter ? (
                   <a
-                    href={userData.socialLinks.twitter}
+                    href={isUser.socialLinks.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {userData.socialLinks.twitter}
+                    {isUser.socialLinks.twitter}
                   </a>
+                ) : (
+                  <span>Not provided</span>
                 )}
               </div>
             </div>
