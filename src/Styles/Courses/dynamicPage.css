@@ -1,0 +1,174 @@
+/* Dynamic Course Page Styling */
+.selected-course-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.course-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.course-logo {
+  width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.course-header-text {
+  flex: 1;
+}
+
+.course-title {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+}
+
+.course-category,
+.course-level,
+.course-instructor,
+.course-rating {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #555;
+}
+
+.course-details {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.course-details h3 {
+  font-size: 1.4rem;
+  margin: 1.5rem 0 1rem;
+  color: #2c3e50;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+.course-description {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.key-takeaways,
+.pre-requirements {
+  padding-left: 1.5rem;
+  margin: 1rem 0;
+}
+
+.key-takeaways li,
+.pre-requirements li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.back-btn,
+.course-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.5rem;
+  margin: 1rem 1rem 1rem 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.back-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.course-link {
+  background-color: #3498db;
+  color: white;
+}
+
+.course-link:hover {
+  background-color: #2980b9;
+}
+
+.back-btn i,
+.course-link i {
+  margin: 0 0.5rem;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .course-header {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .course-logo {
+    width: 40%;
+    max-width: 400px;
+  }
+
+  .course-header-text {
+    padding-left: 1.5rem;
+  }
+
+  .course-title {
+    font-size: 2.2rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .selected-course-container {
+    padding: 2rem;
+  }
+
+  .course-details {
+    padding: 2rem;
+  }
+}
+
+/* Animation for better UX */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.selected-course-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Button focus states for accessibility */
+.back-btn:focus,
+.course-link:focus {
+  outline: 2px solid #3498db;
+  outline-offset: 2px;
+}
+
+/* Loading state styling */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}

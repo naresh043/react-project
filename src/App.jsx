@@ -40,6 +40,7 @@ function App() {
       console.error("Failed to fetch user profile:", err.message);
     }
   };
+
   useEffect(() => {
     let cancelled = false;
 
