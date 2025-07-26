@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Loading from "../Common/loading";
+// import Loading from "../Common/loading";
+import LoadingSpinner from "../Common/LodingSpinneer";
 import "../../Styles/Courses/courses.css";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../config/axiosConfig";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
+
 
 function Courses() {
   const [courses, setCourses] = useState([]); // Store fetched reviews
@@ -13,7 +16,8 @@ function Courses() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchText,setSearchText]=useState("")
   const dispatch = useDispatch();
-  
+
+  useScrollRestoration("courses-scroll");
   const fetchCourses = async () => {
     try {
       const response = await axiosInstance.get(`/api/courses/`)
@@ -33,7 +37,7 @@ function Courses() {
   }, []);
 
   if (loading) {
-    return <Loading />;
+    return <LoadingSpinner />;
   }
 
   if (error) {

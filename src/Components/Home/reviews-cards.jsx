@@ -6,7 +6,8 @@ import { BASE_URL } from "../../config/Constants";
 import "../../Styles/home-css/review-cards.css";
 import Card from "react-bootstrap/Card";
 
-import Loading from "../Common/loading";
+// import Loading from "../Common/loading";
+import LoadingSpinner from "../Common/LodingSpinneer";
 import Coursel_home from "./Coursel";
 
 
@@ -58,7 +59,7 @@ function ReviewsCards() {
   };
 
   if (loading) {
-    return <div>{<Loading />}</div>; // Show loading message
+    return <div>{<LoadingSpinner />}</div>; // Show loading message
   }
 
   if (error) {

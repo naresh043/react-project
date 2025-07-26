@@ -6,6 +6,7 @@ import { format } from "date-fns";
 
 function ProfileComponent() {
   const userData = useSelector((store) => store.user);
+  console.log(userData,"profile card user data")
   const [isUser, setIsUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({});
@@ -71,7 +72,7 @@ function ProfileComponent() {
     try {
       const cleanedData = cleanDataForSubmission(editData);
       const response = await axiosInstance.patch(
-        `/api/users/${userData?.id}`,
+        `/api/users/${userData?._id}`,
         cleanedData
       );
       console.log("Profile updated:", response);

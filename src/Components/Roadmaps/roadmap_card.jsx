@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import "../../Styles/Roadmap-css/roadmap.css";
 import Loading from "../Common/loading";
 import axiosInstance from "../../config/axiosConfig";
+import useScrollRestoration from "../../hooks/useScrollRestoration";
 
 const RoadmapCourseCard = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+
+  useScrollRestoration("roadmap-scroll")
 
   // Fetch data from the API
   useEffect(() => {
