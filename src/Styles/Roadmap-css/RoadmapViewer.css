@@ -1,0 +1,12 @@
+.roadmap-viewer-container {
+  width: 100%;
+  height: 100vh;
+  background-color: #f9f9f9;
+}
+
+.no-roadmap-message {
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: red;
+  text-align: center;
+}

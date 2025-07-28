@@ -14,8 +14,10 @@ import EnrolledCourses from "./Components/EnrolledCourses/enrolled";
 import ProfileComponent from "./Components/About/ProfileComponent";
 import SignUp from "./Components/Common/SiginUp";
 import LogIn from "./Components/Common/Login";
+import RoadmapViewer from "./Components/Roadmaps/RoadmapViewer";
 // import LoadingSpinner from "./Components/Common/LodingSpinneer";
-import Loading from "./Components/Common/loading"
+import ETechLandingPage from "./LandingPage/Landing";
+import Loading from "./Components/Common/loading";
 
 import Layout from "./Layout";
 import { addAuth } from "./Redux/features/authSlice";
@@ -74,31 +76,41 @@ function App() {
 
   // console.log("appRunner", appRunner);
 
-  if (loading) return <div><Loading/></div>;
+  if (loading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
 
   return (
     <>
       <Routes>
         {!isAuth ? (
           <>
-            {/* Redirect all routes to login if not authenticated */}
+            {/* Show landing page for unauthenticated users at root path */}
+            <Route path="/" element={<ETechLandingPage />} />
             <Route path="/login" element={<LogIn />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            {/* Redirect any unknown route to landing */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </>
         ) : (
           <>
+            {/* Show authenticated dashboard layout and subroutes */}
             <Route path="/" element={<Layout />}>
               <Route index element={<ReviewsCards />} />
               <Route path="courses" element={<Courses />} />
-              <Route path="/courses/:courseId" element={<DynamicPage />} />
+              <Route path="courses/:courseId" element={<DynamicPage />} />
               <Route path="roadmap" element={<RoadmapCourseCard />} />
+              <Route path="view-roadmap" element={<RoadmapViewer />} />
               <Route path="about" element={<AboutSection />} />
               <Route path="enrolledcourses" element={<EnrolledCourses />} />
-              <Route path="/me" element={<ProfileComponent />} />
+              <Route path="me" element={<ProfileComponent />} />
             </Route>
-            {/* Redirect login route to home if authenticated */}
+            {/* Prevent access to login/signup if already logged in */}
             <Route path="/login" element={<Navigate to="/" replace />} />
+            <Route path="/signup" element={<Navigate to="/" replace />} />
           </>
         )}
       </Routes>

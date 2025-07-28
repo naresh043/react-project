@@ -1,7 +1,7 @@
 .loginContainer {
     display: grid;
     place-items: center;
-    height: 87vh;
+    height: 100vh;
     background-image: url("https://as2.ftcdn.net/v2/jpg/07/29/64/91/1000_F_729649141_s4GhpR3YuF70bau356SmRMLGPdDhNApe.jpg");
     background-repeat: no-repeat;
     background-size: cover;

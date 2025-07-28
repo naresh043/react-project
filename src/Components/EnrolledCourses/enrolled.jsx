@@ -3,15 +3,20 @@ import Rating from "react-rating";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../config/axiosConfig";
 import { toast } from "react-toastify";
+import { getProfile } from "../../utils/getUser";
+import { useDispatch } from "react-redux";
 
 import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/Enrolled-css/enrolled.css"; // Import the CSS
 import LoadingSpinner from "../Common/LodingSpinneer";
+import { addUser } from "../../Redux/features/userSlice";
+
 
 function EnrolledCourses() {
   const [enrolledData, setEnrollData] = useState([]);
   const [updatingProgressId, setUpdatingProgressId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const dispatch=useDispatch()
 
   const getEnrollmets = async () => {
     try {
@@ -77,6 +82,8 @@ useEffect(() => {
             autoClose: 1000,
           }
         );
+      const userData=await getProfile();
+      dispatch(addUser(userData))
       }
 
       // ✅ Update state with the new enrollment object

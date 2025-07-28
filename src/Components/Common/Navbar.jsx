@@ -26,8 +26,7 @@ function Navbar() {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
     await axiosInstance.post(
       `/api/users/logout`,
-      {},
-      { withCredentials: true }
+      {}
     );
     // Show toast after logout
     toast.success("Logout successful!", {
