@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/Roadmap-css/roadmap.css";
-import Loading from "../Common/loading";
+import LoadingSpinner from "../Common/LodingSpinneer";
 import axiosInstance from "../../config/axiosConfig";
 import useScrollRestoration from "../../hooks/useScrollRestoration";
 
@@ -99,7 +99,7 @@ const RoadmapCourseCard = () => {
 
         {/* Display Loading Indicator */}
         {loading ? (
-         <div className="loadind_roadmap"> <Loading/></div>
+         <div className="loadind_roadmap"> <LoadingSpinner/></div>
         ) : (
         <div className="raodmap_header">
           <h2>Developer Roadmaps</h2>

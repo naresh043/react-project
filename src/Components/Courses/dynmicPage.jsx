@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../config/axiosConfig";
+import LoadingSpinneer from "../Common/LodingSpinneer"
 import "../../Styles/Courses/dynamicPage.css";
-import Loading from "../Common/loading";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
@@ -26,6 +26,8 @@ import {
 } from "react-feather";
 import Rating from "react-rating";
 import { addExistedEnrolls } from "../../Redux/features/enrolledCoursesSlice";
+import { getProfile } from "../../utils/getUser";
+import { addUser } from "../../Redux/features/userSlice";
 
 const DynamicPage = () => {
   const navigate = useNavigate();
@@ -109,16 +111,25 @@ const DynamicPage = () => {
       if (response.status !== 200)
         throw new Error("Failed to enroll in course.");
 
-      toast.success("Enrolled successfully!");
+      toast.success("Enrolled successfully!",{
+        autoClose:1500
+      });
+
       dispatch(addExistedEnrolls([...enrollData, data]));
       await getEnrolledCourses(); // refresh Redux + local state
       setIsEnrolled(true); // update local status
+      const userData=await getProfile()
+      dispatch(addUser(userData))
     } catch (error) {
       if (error?.response?.status === 409) {
-        toast.warning("You are already enrolled in this course.");
+        toast.warning("You are already enrolled in this course.",{
+        autoClose:2000
+      });
         setIsEnrolled(true);
       } else {
-        toast.error("Enrollment failed. Try again.");
+        toast.error("Enrollment failed. Try again.",{
+        autoClose:2000
+      });
       }
     }
   };
@@ -126,7 +137,7 @@ const DynamicPage = () => {
   if (loading)
     return (
       <div className="loading-container">
-        <Loading />
+        <LoadingSpinneer />
       </div>
     );
   if (error) return <div className="error-message">{error}</div>;

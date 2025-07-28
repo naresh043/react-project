@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../../Styles/About-css/ProfileComponent.css";
+import LoadingSpinner from "../Common/LodingSpinneer";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../config/axiosConfig";
-import { format } from "date-fns";
+import { format, parseISO, isValid } from "date-fns";
 
 function ProfileComponent() {
   const userData = useSelector((store) => store.user);
@@ -15,7 +16,7 @@ function ProfileComponent() {
     if (userData) {
       const formattedUser = {
         ...userData,
-        dateOfBirth: format(new Date(userData?.dateOfBirth), "yyyy-MM-dd"),
+        dateOfBirth: userData?.dateOfBirth ? format(new Date(userData.dateOfBirth), "yyyy-MM-dd") : "",
         interests: userData.interests || [],
         socialLinks: userData.socialLinks || {
           linkedin: "",
@@ -134,17 +135,14 @@ function ProfileComponent() {
     }));
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "Not specified";
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+const formatDate = (dateString) => {
+  if (!dateString) return "Not specified";
+  const date = parseISO(dateString);
+  return isValid(date) ? format(date, "MMMM dd, yyyy") : "Not specified";
+};
 
   if (!isUser) {
-    return <div className="profile-loading">Loading profile...</div>;
+    return <div className="profile-loading"><LoadingSpinner/></div>;
   }
 
   return (

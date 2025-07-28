@@ -27,9 +27,10 @@ function EnrolledCourses() {
     }
   };
 
-  useEffect(() => {
-    getEnrollmets();
-  }, [updatingProgressId]);
+useEffect(() => {
+  getEnrollmets();
+}, []);
+
 
   console.log(enrolledData);
   const formatDate = (dateString) => {

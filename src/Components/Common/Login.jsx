@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../Styles/Common-css/login.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../Redux/features/userSlice";
 import { useSelector } from "react-redux";
@@ -42,39 +42,46 @@ function LogIn() {
     setShowPassword((prev) => !prev);
   };
 
-  let handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      // Fetch data from the API using axios
-      const response = await axiosInstance.post("/api/users/login",
-        userData
-      );
-      console.log(response?.data?.data);
-      const user = response?.data?.data; // Get users from response
-      dispatch(addUser(user));
+ let handleLogin = async (e) => {
+  e.preventDefault();
 
-      if (!user) {
-        // Error toast for invalid credentials
-        toast.error("Invalid username or password.", {
-          position: "top-right",
-          autoClose: 1000,
-        });
-        return;
-      }
-      // Success toast
-      toast.success(`Welcome Back ${user.name || "hello"}!`, {
+  try {
+    const response = await axiosInstance.post("/api/users/login", userData);
+    const user = response?.data?.data;
+
+    if (!user) {
+      toast.error("Invalid username or password.", {
         position: "top-right",
         autoClose: 1000,
       });
-      setTimeout(() => navigate("/"), 1000);
-    } catch (error) {
-      // Error toast for API issues
-      toast.error(`Error fetching user data: ${error.message}`, {
+      return;
+    }
+
+    dispatch(addUser(user));
+
+    toast.success(`Welcome Back ${user.name || "User"}!`, {
+      position: "top-right",
+      autoClose: 1000,
+    });
+
+    setTimeout(() => navigate("/"), 1000);
+  } catch (error) {
+    // Check for 404 - User Not Found
+    if (error.response && error.response.status === 404) {
+      toast.error("User not found, please register!", {
         position: "top-right",
-        autoClose: 1000,
+        autoClose: 2000,
+      });
+    } else {
+      // Handle other errors
+      toast.error(`Login failed: ${error.message}`, {
+        position: "top-right",
+        autoClose: 2000,
       });
     }
-  };
+  }
+};
+
 
   let handleGuestLogin = async () => {
     const guestUser = {
@@ -139,9 +146,9 @@ function LogIn() {
           </button>
           <p>
             Don't have an Account?{" "}
-            <a href="/Signup" className="registernow">
+            <Link to="/signup" className="registernow">
               Register now
-            </a>
+            </Link>
           </p>
           <button type="button" className="GuestBtn" onClick={handleGuestLogin}>
             Guest Mode

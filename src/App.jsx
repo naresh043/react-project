@@ -12,13 +12,16 @@ import RoadmapCourseCard from "./Components/Roadmaps/roadmap_card";
 import AboutSection from "./Components/About/about";
 import EnrolledCourses from "./Components/EnrolledCourses/enrolled";
 import ProfileComponent from "./Components/About/ProfileComponent";
+import SignUp from "./Components/Common/SiginUp";
 import LogIn from "./Components/Common/Login";
-
+// import LoadingSpinner from "./Components/Common/LodingSpinneer";
+import Loading from "./Components/Common/loading"
 
 import Layout from "./Layout";
 import { addAuth } from "./Redux/features/authSlice";
 import { ToastContainer } from "react-toastify";
 import { addUser } from "./Redux/features/userSlice";
+import { getProfile } from "./utils/getUser";
 
 function App() {
   const isAuth = useSelector((state) => state?.userAuth ?? false);
@@ -27,17 +30,15 @@ function App() {
   const { courseId } = useParams();
   const dispatch = useDispatch();
 
-  const getProfile = async () => {
+  const fetchProfile = async () => {
     try {
-      const response = await axiosInstance.get("/api/users/profile");
-      const userData = response?.data?.data;
+      const userData = await getProfile();
       if (userData) {
         dispatch(addUser(userData));
-      } else {
-        console.warn("User profile data is empty");
       }
-    } catch (err) {
-      console.error("Failed to fetch user profile:", err.message);
+    } catch (error) {
+      // Optionally handle error with a toast
+      console.error("Error fetching profile in component:", error);
     }
   };
 
@@ -64,16 +65,16 @@ function App() {
 
     // Call only if not authenticated or user not in store
     if (!isAuth) checkAuth();
-    if (!isUser) getProfile();
+    if (!isUser) fetchProfile();
 
     return () => {
       cancelled = true;
     };
-  }, [ dispatch, isAuth, isUser]);
+  }, [dispatch, isAuth, isUser]);
 
   // console.log("appRunner", appRunner);
 
-  if (loading) return <div>Loading...</div>; // Optional loading state
+  if (loading) return <div><Loading/></div>;
 
   return (
     <>
@@ -81,10 +82,8 @@ function App() {
         {!isAuth ? (
           <>
             {/* Redirect all routes to login if not authenticated */}
-            <Route
-              path="/login"
-              element={<LogIn  />}
-            />
+            <Route path="/login" element={<LogIn />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         ) : (
@@ -96,7 +95,7 @@ function App() {
               <Route path="roadmap" element={<RoadmapCourseCard />} />
               <Route path="about" element={<AboutSection />} />
               <Route path="enrolledcourses" element={<EnrolledCourses />} />
-              <Route path="/me" element={<ProfileComponent/>}/>
+              <Route path="/me" element={<ProfileComponent />} />
             </Route>
             {/* Redirect login route to home if authenticated */}
             <Route path="/login" element={<Navigate to="/" replace />} />

@@ -1,31 +1,29 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux"; // Import useDispatch
+import { toast } from "react-toastify";
+import { addUser } from "../../Redux/features/userSlice";
+
 import "react-toastify/dist/ReactToastify.css"; // Import the CSS for toast
 import "../../Styles/Common-css/SiginUp.css";
-import { useDispatch } from "react-redux"; // Import useDispatch
-// import { userDetils } from "../../Redux/features/searchSlice";
-// import { ActionisUserLogin,ActionuserDetils } from "../../Redux/features/searchSlice";
-import { useNavigate } from "react-router-dom";
-import axios from "axios"; // Import axios
 
+import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../config/axiosConfig";
 
 function Signup() {
   const dispatch = useDispatch();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [values, setValues] = useState({
     name: "",
     email: "",
     passWord: "",
     confirmPass: "",
-    enrolledCourses:[]
-
   });
 
-
-  const handleSubmit = async  (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-   
+    // Check if passwords match
     if (values.passWord !== values.confirmPass) {
       toast.error("Passwords do not match!", {
         position: "top-right",
@@ -35,56 +33,41 @@ function Signup() {
     }
 
     try {
-      // First, check if the email already exists
-    const checkResponse = await axios.get(
-      `https://giant-ambitious-danger.glitch.me/credentials?email=${values.email}`
-    );
-
-    if (checkResponse.data.length > 0) {
-      // If the email already exists, show an error toast
-      toast.error("User is already exists!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-      return;
-    }
-     // If the email does not exist, proceed with registration
-      const response = await axios.post("https://giant-ambitious-danger.glitch.me/credentials", {
+      // Attempt registration
+      const response = await axiosInstance.post("/api/users/register", {
         name: values.name,
         email: values.email,
         password: values.passWord,
-        enrolledCourses: values?.enrolledCourses
       });
 
-      // If the response is successful
+      // On successful registration
       if (response.status === 201) {
-        const responseData = response.data; // Extract the response data
-        const userData = {
-          name: values.name,
-          email: values.email,
-          enrolledCourses: values.enrolledCourses,
-          password: values.passWord,
-          id: responseData.id
-        };
-        dispatch(ActionisUserLogin(true));
-        dispatch(ActionuserDetils(userData));
-        toast.success("Signup successful !", {
+        dispatch(addUser(response?.data?.data));
+
+        toast.success("Signup successful!", {
           position: "top-right",
-          autoClose: 2000,
-       
+          autoClose: 1500,
         });
+
         navigate("/");
-      } else {
-        throw new Error("Failed to send data to the server.");
       }
     } catch (error) {
-      toast.error(`Error: ${error.message}`, {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      // Handle 409 error for existing user
+      if (error.response && error.response.status === 409) {
+        toast.error("User already exists with this email!", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        // Handle all other errors
+        toast.error(`Error: ${error.message}`, {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
     }
 
-
+    // Clear form fields
     setValues({ name: "", email: "", passWord: "", confirmPass: "" });
   };
 
@@ -155,14 +138,18 @@ function Signup() {
             />
           </div>
           <p>
-            Already have an Account? <a href="/Login" className="loginText">Login</a>
+            Already have an Account?{" "}
+            <Link to="/Login" className="loginText">
+              Login
+            </Link>
           </p>
           <button type="submit" className="signupSumbitBtn">
             Submit
           </button>
         </form>
       </div>
-      {/* <ToastContainer /> */}{/* Required to display toasts */}
+      {/* <ToastContainer /> */}
+      {/* Required to display toasts */}
     </>
   );
 }

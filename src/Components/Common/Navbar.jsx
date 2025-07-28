@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import "../../Styles/Common-css/Navbar.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import axiosInstance from "../../config/axiosConfig";
 import { addAuth } from "../../Redux/features/authSlice";
+import axiosInstance from "../../config/axiosConfig";
+
+import "../../Styles/Common-css/Navbar.css";
+import "react-toastify/dist/ReactToastify.css";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -135,12 +136,12 @@ function Navbar() {
                 </li>
               </>
             )}
-            <li className="Account-cont">
-              <div
-                className="Account"
-                onMouseEnter={handleAccountMouseEnter}
-                onMouseLeave={handleAccountMouseLeave}
-              >
+            <li
+              className="Account-cont"
+              onMouseEnter={() => setIsOpen(true)}
+              onMouseLeave={() => setIsOpen(false)}
+            >
+              <div className="Account">
                 <img
                   src={isUser?.photoURL || "/default-avatar.png"}
                   alt="Profile"
@@ -148,12 +149,9 @@ function Navbar() {
                 />
                 <i className="fa-solid fa-caret-down"></i>
               </div>
+
               {isOpen && (
-                <ul
-                  className="account-dropdown"
-                  onMouseEnter={handleAccountMouseEnter}
-                  onMouseLeave={handleAccountMouseLeave}
-                >
+                <ul className="account-dropdown">
                   {isAuth ? (
                     <>
                       <li>
@@ -162,8 +160,7 @@ function Navbar() {
                           className="link"
                           onClick={handleHamburger}
                         >
-                          <i className="fa-solid fa-user"></i>
-                          Profile
+                          <i className="fa-solid fa-user"></i> Profile
                         </Link>
                       </li>
                       <li>
@@ -172,13 +169,15 @@ function Navbar() {
                           className="link"
                           onClick={handleHamburger}
                         >
-                          <i className="fa-solid fa-cog"></i>
-                          Account Settings
+                          <i className="fa-solid fa-cog"></i> Account Settings
                         </Link>
                       </li>
                       <li>
                         <button onClick={handleLogOut} className="logoutbtn">
-                          <i className="fa-solid fa-sign-out-alt" id="logoutIcon"></i>
+                          <i
+                            className="fa-solid fa-sign-out-alt"
+                            id="logoutIcon"
+                          ></i>
                           Logout
                         </button>
                       </li>
@@ -186,15 +185,13 @@ function Navbar() {
                   ) : location?.pathname !== "/Login" ? (
                     <li>
                       <Link to="/Login" onClick={handleHamburger}>
-                        <i className="fa-solid fa-sign-in-alt"></i>
-                        Login
+                        <i className="fa-solid fa-sign-in-alt"></i> Login
                       </Link>
                     </li>
                   ) : (
                     <li>
                       <Link to="/Signup" onClick={handleHamburger}>
-                        <i className="fa-solid fa-user-plus"></i>
-                        Signup
+                        <i className="fa-solid fa-user-plus"></i> Signup
                       </Link>
                     </li>
                   )}
