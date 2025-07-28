@@ -14,7 +14,6 @@ import EnrolledCourses from "./Components/EnrolledCourses/enrolled";
 import ProfileComponent from "./Components/About/ProfileComponent";
 import SignUp from "./Components/Common/SiginUp";
 import LogIn from "./Components/Common/Login";
-import RoadmapViewer from "./Components/Roadmaps/RoadmapViewer";
 // import LoadingSpinner from "./Components/Common/LodingSpinneer";
 import ETechLandingPage from "./LandingPage/Landing";
 import Loading from "./Components/Common/loading";
@@ -103,7 +102,6 @@ function App() {
               <Route path="courses" element={<Courses />} />
               <Route path="courses/:courseId" element={<DynamicPage />} />
               <Route path="roadmap" element={<RoadmapCourseCard />} />
-              <Route path="view-roadmap" element={<RoadmapViewer />} />
               <Route path="about" element={<AboutSection />} />
               <Route path="enrolledcourses" element={<EnrolledCourses />} />
               <Route path="me" element={<ProfileComponent />} />
