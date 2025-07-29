@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useRef,useEffect} from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -12,6 +12,9 @@ import "react-toastify/dist/ReactToastify.css";
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false); // State for hamburger menu
+  const menuRef = useRef();
+  const barsRef = useRef();
+
   const location = useLocation();
 
   const dispatch = useDispatch();
@@ -24,10 +27,7 @@ function Navbar() {
   const handleLogOut = async () => {
     console.log("LOG OUT");
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
-    await axiosInstance.post(
-      `/api/users/logout`,
-      {}
-    );
+    await axiosInstance.post(`/api/users/logout`, {});
     // Show toast after logout
     toast.success("Logout successful!", {
       position: "top-right",
@@ -49,6 +49,26 @@ function Navbar() {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+  const handleOutsideClick = (event) => {
+    if (
+      menuOpen &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target) &&
+      barsRef.current &&
+      !barsRef.current.contains(event.target)
+    ) {
+      setMenuOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleOutsideClick);
+  return () => {
+    document.removeEventListener("mousedown", handleOutsideClick);
+  };
+}, [menuOpen]);
+
+
   return (
     <header className="navheader">
       <nav className="NavBar">
@@ -60,6 +80,7 @@ function Navbar() {
             </h1>
           </Link>
           <ul
+           ref={menuRef}
             className={`linksContainer ${
               menuOpen ? "linksContaineractive" : ""
             }`}
@@ -198,7 +219,7 @@ function Navbar() {
               )}
             </li>
           </ul>
-          <div className="bars" onClick={handleHamburger}>
+          <div className="bars" onClick={handleHamburger} ref={barsRef}>
             <button>
               <i className="fa-solid fa-bars"></i>
             </button>
