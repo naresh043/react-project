@@ -14,7 +14,8 @@ import EnrolledCourses from "./Components/EnrolledCourses/enrolled";
 import ProfileComponent from "./Components/About/ProfileComponent";
 import SignUp from "./Components/Common/SiginUp";
 import LogIn from "./Components/Common/Login";
-// import LoadingSpinner from "./Components/Common/LodingSpinneer";
+import CoursesCompleted from "./Components/About/CoursesCompleted ";
+import AccountSettings from "./accountSettings/AccountSettings";
 import ETechLandingPage from "./LandingPage/Landing";
 import Loading from "./Components/Common/loading";
 
@@ -104,7 +105,13 @@ function App() {
               <Route path="roadmap" element={<RoadmapCourseCard />} />
               <Route path="about" element={<AboutSection />} />
               <Route path="enrolledcourses" element={<EnrolledCourses />} />
-              <Route path="me" element={<ProfileComponent />} />
+
+              <Route path="/me" element={<ProfileComponent />} />
+              <Route
+                path="/me/coursescompleted"
+                element={<CoursesCompleted />}
+              />
+              <Route path="/me/account-settings" element={<AccountSettings/>} />
             </Route>
             {/* Prevent access to login/signup if already logged in */}
             <Route path="/login" element={<Navigate to="/" replace />} />

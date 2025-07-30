@@ -42,46 +42,61 @@ function LogIn() {
     setShowPassword((prev) => !prev);
   };
 
- let handleLogin = async (e) => {
-  e.preventDefault();
+  let handleLogin = async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await axiosInstance.post("/api/users/login", userData);
-    const user = response?.data?.data;
+    try {
+      const response = await axiosInstance.post("/api/users/login", userData);
+      const user = response?.data?.data;
 
-    if (!user) {
-      toast.error("Invalid username or password.", {
+      if (!user) {
+        toast.error("Invalid username or password.", {
+          position: "top-right",
+          autoClose: 1000,
+        });
+        return;
+      }
+      // dispatch(addAuth(true));
+      dispatch(addUser(user));
+
+      toast.success(`Welcome Back ${user.name || "User"}!`, {
         position: "top-right",
         autoClose: 1000,
       });
-      return;
+
+      // ✅ Go to dashboard instead of "/"
+      setTimeout(() => navigate("/"), 1000);
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 404) {
+          toast.error("User not found, please register!", {
+            position: "top-right",
+            autoClose: 2000,
+          });
+        } else if (error.response.status === 401) {
+          toast.error("Invalid password. Please try again.", {
+            position: "top-right",
+            autoClose: 2000,
+          });
+        } else {
+          toast.error(
+            `Login failed: ${
+              error.response.data.message || "Unexpected error"
+            }`,
+            {
+              position: "top-right",
+              autoClose: 2000,
+            }
+          );
+        }
+      } else {
+        toast.error("Network error. Please try again later.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      }
     }
-
-    dispatch(addUser(user));
-
-    toast.success(`Welcome Back ${user.name || "User"}!`, {
-      position: "top-right",
-      autoClose: 1000,
-    });
-
-    setTimeout(() => navigate("/"), 1000);
-  } catch (error) {
-    // Check for 404 - User Not Found
-    if (error.response && error.response.status === 404) {
-      toast.error("User not found, please register!", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    } else {
-      // Handle other errors
-      toast.error(`Login failed: ${error.message}`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    }
-  }
-};
-
+  };
 
   let handleGuestLogin = async () => {
     const guestUser = {
@@ -89,10 +104,7 @@ function LogIn() {
       password: "Guest@143",
     };
 
-    const response = await axiosInstance.post(
-      "/api/users/login",
-      guestUser
-    );
+    const response = await axiosInstance.post("/api/users/login", guestUser);
     const user = response?.data?.data;
 
     dispatch(addUser(user));

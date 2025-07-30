@@ -185,7 +185,7 @@ function Navbar() {
                       </li>
                       <li>
                         <Link
-                          to="/account-settings"
+                          to="/me/account-settings"
                           className="link"
                           onClick={handleHamburger}
                         >
