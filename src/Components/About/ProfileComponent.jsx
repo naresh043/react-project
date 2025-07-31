@@ -269,7 +269,6 @@ function ProfileComponent() {
             <div
               className="stat-card"
               onClick={handleCompletedClick}
-              style={{ cursor: "pointer" }}
             >
               <div className="stat-icon">
                 <i className="fas fa-graduation-cap"></i>
