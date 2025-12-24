@@ -24,6 +24,20 @@ function LogIn() {
     console.log("Navigated to:", location.pathname);
   }, [location]);
 
+  useEffect(() => {
+    /* global google */
+    google.accounts.id.initialize({
+      client_id: "516062484148-ij9557lvrrgu2b20srjehpf30ivic06v.apps.googleusercontent.com",
+      callback: handleGoogleLogin,
+    });
+
+    google.accounts.id.renderButton(document.getElementById("googleLogin"), {//div
+      theme: "outline",
+      size: "large",
+      width: 250,
+    });
+  }, []);
+
   let handle_Username = (e) => {
     setuserData((prevData) => ({
       ...prevData,
@@ -98,6 +112,23 @@ function LogIn() {
     }
   };
 
+  const handleGoogleLogin = async (response) => {
+    console.log(response);
+    try {
+      const res = await axiosInstance.post("/api/users/google-login", {
+        token: response.credential,
+      });
+
+      const user = res.data.data;
+      dispatch(addUser(user));
+
+      toast.success(`Welcome ${user.name}!`);
+      navigate("/");
+    } catch (err) {
+      toast.error("Google login failed");
+    }
+  };
+
   let handleGuestLogin = async () => {
     const guestUser = {
       email: "guest@example.com",
@@ -156,6 +187,8 @@ function LogIn() {
           <button type="submit" className="loginBtn">
             Login
           </button>
+          <div id="googleLogin" style={{ marginTop: "15px" }}></div>
+
           <p>
             Don't have an Account?{" "}
             <Link to="/signup" className="registernow">

@@ -68,8 +68,8 @@ function ProfileComponent() {
     }
 
     // Remove empty photoURL to avoid validation errors
-    if (cleanedData.photoURL && cleanedData.photoURL.trim() === "") {
-      delete cleanedData.photoURL;
+    if (cleanedData.avatar && cleanedData.avatar.trim() === "") {
+      delete cleanedData.avatar;
     }
 
     // Filter out empty interests
@@ -170,7 +170,7 @@ function ProfileComponent() {
           <div className="profile-header">
             <div className="profile-avatar-section">
               <img
-                src={isUser?.photoURL || "/default-avatar.png"}
+                src={isUser?.avatar || "/default-avatar.png"}
                 alt="Profile"
                 className="profile-avatar"
                 onError={(e) => {
@@ -180,9 +180,9 @@ function ProfileComponent() {
               {isEditing && (
                 <input
                   type="url"
-                  value={editData?.photoURL || ""}
+                  value={editData?.avatar || ""}
                   onChange={(e) =>
-                    handleInputChange("photoURL", e.target.value)
+                    handleInputChange("avatar", e.target.value)
                   }
                   placeholder="Profile Image URL"
                   className="photo-url-input"

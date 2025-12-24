@@ -21,6 +21,8 @@ function Navbar() {
   const isAuth = useSelector((store) => store.userAuth);
   const isUser = useSelector((store) => store.user);
 
+console.log(isUser);
+
   const handleHamburger = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
   };
@@ -163,11 +165,12 @@ function Navbar() {
             >
               <div className="Account">
                 <img
-                  src={isUser?.photoURL || "/default-avatar.png"}
+                  src={isUser?.avatar}
                   alt="Profile"
                   className="profile-image"
                 />
                 <i className="fa-solid fa-caret-down"></i>
+                
               </div>
 
               {isOpen && (
