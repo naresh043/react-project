@@ -27,11 +27,13 @@ function LogIn() {
   useEffect(() => {
     /* global google */
     google.accounts.id.initialize({
-      client_id: "516062484148-ij9557lvrrgu2b20srjehpf30ivic06v.apps.googleusercontent.com",
+      client_id:
+        "516062484148-ij9557lvrrgu2b20srjehpf30ivic06v.apps.googleusercontent.com",
       callback: handleGoogleLogin,
     });
 
-    google.accounts.id.renderButton(document.getElementById("googleLogin"), {//div
+    google.accounts.id.renderButton(document.getElementById("googleLogin"), {
+      //div
       theme: "outline",
       size: "large",
       width: 250,
@@ -187,6 +189,9 @@ function LogIn() {
           <button type="submit" className="loginBtn">
             Login
           </button>
+          <div className="divider">
+            <span>OR</span>
+          </div>
           <div id="googleLogin" style={{ marginTop: "15px" }}></div>
 
           <p>
