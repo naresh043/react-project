@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-export const userAuth = createSlice({
+export const isAuth = createSlice({
   name: "auth",
   initialState: null,
   reducers: {
@@ -11,6 +11,6 @@ export const userAuth = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addAuth, removeAuth } = userAuth.actions;
+export const { addAuth, removeAuth } = isAuth.actions;
 
-export default userAuth.reducer;
+export default isAuth.reducer;

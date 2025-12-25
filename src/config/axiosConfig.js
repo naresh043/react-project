@@ -4,7 +4,7 @@ import { BASE_URL } from "../config/Constants";
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
-  withCredentials: true, // Send cookies with every request
+  withCredentials: true,  
 });
 
 // Optional: Add response interceptor

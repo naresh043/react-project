@@ -6,7 +6,7 @@ import enrolledReducer from "../features/enrolledCoursesSlice"
 export const store = configureStore({
   reducer: {
     user:userReducer,
-    userAuth:authReducer,
+    isAuth:authReducer,
     enrolledCourses:enrolledReducer,
   },
 })

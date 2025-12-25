@@ -5,6 +5,7 @@ import "../../Styles/Common-css/login.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../Redux/features/userSlice";
+import { addAuth } from "../../Redux/features/authSlice";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../config/axiosConfig";
 function LogIn() {
@@ -58,55 +59,39 @@ function LogIn() {
     setShowPassword((prev) => !prev);
   };
 
-  let handleLogin = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axiosInstance.post("/api/users/login", userData);
-      const user = response?.data?.data;
+      // ✅ Authenticate only (cookie is set by backend)
+      await axiosInstance.post("/api/users/login", userData);
 
-      if (!user) {
-        toast.error("Invalid username or password.", {
-          position: "top-right",
-          autoClose: 1000,
-        });
-        return;
-      }
-      // dispatch(addAuth(true));
-      dispatch(addUser(user));
+      const res = await axiosInstance.get("/api/auth/me");
+      // 3️⃣ Update redux
+      dispatch(addAuth(res.data.authenticated));
+      dispatch(addUser(res.data.user));
 
-      toast.success(`Welcome Back ${user.name || "User"}!`, {
+      toast.success("Login successful!", {
         position: "top-right",
         autoClose: 1000,
       });
 
-      // ✅ Go to dashboard instead of "/"
-      setTimeout(() => navigate("/"), 1000);
+      setTimeout(() => navigate("/app"), 1000);
     } catch (error) {
-      if (error.response) {
-        if (error.response.status === 404) {
-          toast.error("User not found, please register!", {
-            position: "top-right",
-            autoClose: 2000,
-          });
-        } else if (error.response.status === 401) {
-          toast.error("Invalid password. Please try again.", {
-            position: "top-right",
-            autoClose: 2000,
-          });
-        } else {
-          toast.error(
-            `Login failed: ${
-              error.response.data.message || "Unexpected error"
-            }`,
-            {
-              position: "top-right",
-              autoClose: 2000,
-            }
-          );
-        }
+      console.log(error);
+      if (error.response?.status === 401) {
+        // ✅ Same message for all invalid credentials (security best practice)
+        toast.error("Invalid email or password.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else if (error.response?.status === 429) {
+        toast.error("Too many attempts. Please try again later.", {
+          position: "top-right",
+          autoClose: 2000,
+        });
       } else {
-        toast.error("Network error. Please try again later.", {
+        toast.error("Something went wrong. Please try again.", {
           position: "top-right",
           autoClose: 2000,
         });
@@ -120,12 +105,14 @@ function LogIn() {
       const res = await axiosInstance.post("/api/users/google-login", {
         token: response.credential,
       });
+      console.log(res);
 
       const user = res.data.data;
       dispatch(addUser(user));
+      dispatch(addAuth(res.data.authenticated));
 
-      toast.success(`Welcome ${user.name}!`);
-      navigate("/");
+      toast.success("login successful");
+      navigate("/app");
     } catch (err) {
       toast.error("Google login failed");
     }
@@ -137,18 +124,21 @@ function LogIn() {
       password: "Guest@143",
     };
 
-    const response = await axiosInstance.post("/api/users/login", guestUser);
-    const user = response?.data?.data;
+    await axiosInstance.post("/api/users/login", guestUser);
 
-    dispatch(addUser(user));
-    toast.success("Logged in as Guest!", {
+    const res = await axiosInstance.get("/api/auth/me");
+
+    dispatch(addAuth(res.data.authenticated));
+    dispatch(addUser(res.data.user));
+
+    toast.success("Logged successful as Guest!", {
       position: "top-right",
       autoClose: 1000,
       style: {
         backgroundColor: "#021B79",
         color: "white",
       },
-      onClose: () => navigate("/"),
+      onClose: () => navigate("/app"),
     });
   };
 

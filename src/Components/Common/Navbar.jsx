@@ -1,13 +1,15 @@
-import React, { useState,useRef,useEffect} from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { addAuth } from "../../Redux/features/authSlice";
+import { addUser } from "../../Redux/features/userSlice";
 import axiosInstance from "../../config/axiosConfig";
 
 import "../../Styles/Common-css/Navbar.css";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../../hooks/useAuth";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,10 +20,13 @@ function Navbar() {
   const location = useLocation();
 
   const dispatch = useDispatch();
-  const isAuth = useSelector((store) => store.userAuth);
-  const isUser = useSelector((store) => store.user);
+  const { isAuth, user } = useAuth();
+  console.log(
+    { isAuth },
+    "helooooooooooooooooooooooooooooooooooooooooooooooooooo"
+  );
 
-console.log(isUser);
+  console.log(user);
 
   const handleHamburger = () => {
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
@@ -30,6 +35,8 @@ console.log(isUser);
     console.log("LOG OUT");
     setMenuOpen((prevMenuOpen) => !prevMenuOpen);
     await axiosInstance.post(`/api/users/logout`, {});
+    dispatch(addAuth(false));
+    dispatch(addUser(null));
     // Show toast after logout
     toast.success("Logout successful!", {
       position: "top-right",
@@ -40,7 +47,6 @@ console.log(isUser);
       draggable: true,
       progress: undefined,
     });
-    dispatch(addAuth(null));
   };
 
   const handleAccountMouseEnter = () => {
@@ -52,24 +58,23 @@ console.log(isUser);
   };
 
   useEffect(() => {
-  const handleOutsideClick = (event) => {
-    if (
-      menuOpen &&
-      menuRef.current &&
-      !menuRef.current.contains(event.target) &&
-      barsRef.current &&
-      !barsRef.current.contains(event.target)
-    ) {
-      setMenuOpen(false);
-    }
-  };
+    const handleOutsideClick = (event) => {
+      if (
+        menuOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        barsRef.current &&
+        !barsRef.current.contains(event.target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handleOutsideClick);
-  return () => {
-    document.removeEventListener("mousedown", handleOutsideClick);
-  };
-}, [menuOpen]);
-
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [menuOpen]);
 
   return (
     <header className="navheader">
@@ -82,7 +87,7 @@ console.log(isUser);
             </h1>
           </Link>
           <ul
-           ref={menuRef}
+            ref={menuRef}
             className={`linksContainer ${
               menuOpen ? "linksContaineractive" : ""
             }`}
@@ -91,7 +96,7 @@ console.log(isUser);
               <>
                 <li>
                   <NavLink
-                    to="/"
+                    to="/app"
                     className={({ isActive }) =>
                       isActive ? "active link" : "link"
                     }
@@ -104,7 +109,7 @@ console.log(isUser);
                 </li>
                 <li>
                   <NavLink
-                    to="/courses"
+                    to="/app/courses"
                     className={({ isActive }) =>
                       isActive ? "active link" : "link"
                     }
@@ -118,7 +123,7 @@ console.log(isUser);
                 </li>
                 <li>
                   <NavLink
-                    to="/roadmap"
+                    to="/app/roadmap"
                     className={({ isActive }) =>
                       isActive ? "active link" : "link"
                     }
@@ -132,7 +137,7 @@ console.log(isUser);
                 </li>
                 <li>
                   <NavLink
-                    to="/about"
+                    to="/app/about"
                     className={({ isActive }) =>
                       isActive ? "active link" : "link"
                     }
@@ -145,7 +150,7 @@ console.log(isUser);
                 </li>
                 <li>
                   <NavLink
-                    to="/enrolledcourses"
+                    to="/app/enrolledcourses"
                     className={({ isActive }) =>
                       isActive ? "active link" : "link"
                     }
@@ -165,12 +170,11 @@ console.log(isUser);
             >
               <div className="Account">
                 <img
-                  src={isUser?.avatar}
+                  src={user?.avatar|| "dummy url"}
                   alt="Profile"
                   className="profile-image"
                 />
                 <i className="fa-solid fa-caret-down"></i>
-                
               </div>
 
               {isOpen && (
@@ -179,7 +183,7 @@ console.log(isUser);
                     <>
                       <li>
                         <Link
-                          to="/me"
+                          to="/app/me"
                           className="link"
                           onClick={handleHamburger}
                         >
@@ -188,7 +192,7 @@ console.log(isUser);
                       </li>
                       <li>
                         <Link
-                          to="/me/account-settings"
+                          to="/app/me/account-settings"
                           className="link"
                           onClick={handleHamburger}
                         >

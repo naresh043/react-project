@@ -1,9 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useAuth } from "../hooks/useAuth";
 
 const PublicRoute = () => {
-  const isAuth = useSelector((state) => state.userAuth);
-  return !isAuth ? <Outlet /> : <Navigate to="/" replace />;
+  const { isAuth } = useAuth();
+  return !isAuth ? <Outlet /> : <Navigate to="/app" replace />;
 };
+
 
 export default PublicRoute;
