@@ -1,8 +1,11 @@
-import { useSelector } from "react-redux";
+import { useSelector, shallowEqual } from "react-redux";
 
 export const useAuth = () => {
-  const isAuth = useSelector((state) => state.isAuth);
-  const user = useSelector((state) => state.user);
-
-  return { isAuth, user };
+  return useSelector(
+    (state) => ({
+      isAuth: state.isAuth,
+      user: state.user,
+    }),
+    shallowEqual
+  );
 };

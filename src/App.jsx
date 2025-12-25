@@ -1,12 +1,12 @@
 import { Routes, Route } from "react-router-dom";
 import AppInitializer from "./AppInitializer";
 import PrivateRoute from "./Routes/PrivateRoute";
-import PublicRoute from "./routes/PublicRoute";
+import PublicRoute from "./Routes/PublicRoute";
 
 import Layout from "./Layout";
 import ETechLandingPage from "./LandingPage/Landing";
 import Login from "./Components/Common/Login";
-import SignUp from "./Components/Common/SiginUp";
+import SignUp from "./Components/Common/SignUp";
 
 import Courses from "./Components/Courses/courses";
 import DynamicPage from "./Components/Courses/dynmicPage";
@@ -15,7 +15,7 @@ import RoadmapCourseCard from "./Components/Roadmaps/roadmap_card";
 import AboutSection from "./Components/About/about";
 import EnrolledCourses from "./Components/EnrolledCourses/enrolled";
 import ProfileComponent from "./Components/About/ProfileComponent";
-import CoursesCompleted from "./Components/About/CoursesCompleted ";
+import CoursesCompleted from "./Components/About/CoursesCompleted";
 import AccountSettings from "./accountSettings/AccountSettings";
 
 import { ToastContainer } from "react-toastify";

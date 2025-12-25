@@ -7,38 +7,37 @@ import { addUser } from "./Redux/features/userSlice";
 export default function AppInitializer({ children }) {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  console.log(children);
 
   useEffect(() => {
     let cancelled = false;
 
     const initAuth = async () => {
-      try { 
+      try {
         const res = await axiosInstance.get("/api/auth/me");
-        console.log(res,"apppppppppp intial");
 
         if (!cancelled) {
           dispatch(addAuth(res.data.authenticated));
           dispatch(addUser(res.data.user));
         }
       } catch (error) {
-        if (!cancelled) {
-          dispatch(addAuth(false));
+        if (error.response?.status === 401) {
+          if (!cancelled) {
+            dispatch(addAuth(false));
+            dispatch(addUser(null));
+          }
+        } else {
+          console.error("Auth init failed", error);
         }
       } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
+        if (!cancelled) setLoading(false);
       }
     };
-
     initAuth();
 
     return () => {
       cancelled = true;
     };
   }, [dispatch]);
-
 
   // ✅ Block app rendering until auth is resolved
   if (loading) return null; // or <Loading />
