@@ -36,10 +36,10 @@ function ProfileComponent() {
 
   console.log(editData, "editing data");
   const handleEnrolledCoursesClick=()=>{
-    navigate("/enrolledcourses")
+    navigate("/app/enrolledcourses")
   }
   const handleCompletedClick = () => {
-      navigate("/me/coursescompleted"); 
+      navigate("/app/me/coursescompleted"); 
   };
 
   const handleEdit = () => {
@@ -170,12 +170,12 @@ function ProfileComponent() {
           <div className="profile-header">
             <div className="profile-avatar-section">
               <img
-                src={isUser?.avatar || "/default-avatar.png"}
+                src={isUser?.avatar || "https://t3.ftcdn.net/jpg/07/24/59/76/240_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
                 alt="Profile"
                 className="profile-avatar"
-                onError={(e) => {
-                  e.target.src = "/default-avatar.png";
-                }}
+                // onError={(e) => {
+                //   e.target.src = "/default-avatar.png";
+                // }}
               />
               {isEditing && (
                 <input

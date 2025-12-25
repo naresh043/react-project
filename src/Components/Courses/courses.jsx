@@ -116,7 +116,7 @@ function Courses() {
                         <b>Duration: </b>
                         {val.duration}
                       </p>
-                      <Link to={`/courses/${val?._id}`}>
+                      <Link to={`/app/courses/${val?._id}`}>
                         <button
                           className="overview-btn"
                           onClick={() => {

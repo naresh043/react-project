@@ -97,6 +97,7 @@ function Navbar() {
                 <li>
                   <NavLink
                     to="/app"
+                    end
                     className={({ isActive }) =>
                       isActive ? "active link" : "link"
                     }
@@ -170,7 +171,7 @@ function Navbar() {
             >
               <div className="Account">
                 <img
-                  src={user?.avatar|| "dummy url"}
+                  src={user?.avatar|| "https://t3.ftcdn.net/jpg/07/24/59/76/240_F_724597608_pmo5BsVumFcFyHJKlASG2Y2KpkkfiYUU.jpg"}
                   alt="Profile"
                   className="profile-image"
                 />

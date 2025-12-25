@@ -522,7 +522,7 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .pageContainer {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    /* background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); */
     color: #e2e8f0;
   }
   

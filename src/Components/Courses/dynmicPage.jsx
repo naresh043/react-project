@@ -39,6 +39,7 @@ const DynamicPage = () => {
   const [checkingEnrollment, setCheckingEnrollment] = useState(true);
 
   console.log(isEnrolled,"isEnrolled",checkingEnrollment,"checkingEnrollment")
+  console.log(courseId,"cr idddddd")
 
   const userData = useSelector((state) => state?.user) || {};
   const enrollData = useSelector((state) => state?.enrolledCourses) || [];
