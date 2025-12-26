@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../config/axiosConfig";
-import LoadingSpinneer from "../Common/LodingSpinneer"
+import LoadingSpinneer from "../Common/LodingSpinneer";
 import "../../Styles/Courses/dynamicPage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -38,8 +38,7 @@ const DynamicPage = () => {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [checkingEnrollment, setCheckingEnrollment] = useState(true);
 
-  console.log(isEnrolled,"isEnrolled",checkingEnrollment,"checkingEnrollment")
-  console.log(courseId,"cr idddddd")
+  console.log(data, "cr idddddd");
 
   const userData = useSelector((state) => state?.user) || {};
   const enrollData = useSelector((state) => state?.enrolledCourses) || [];
@@ -51,7 +50,7 @@ const DynamicPage = () => {
         "/api/enrollments/me/enrolled-courses"
       );
       const enrolled = response?.data?.data || [];
-      console.log(enrolled,"enroll data" ,courseId,"courseId")
+      // console.log(enrolled, "enroll data", courseId, "courseId");
 
       dispatch(addExistedEnrolls(enrolled));
 
@@ -59,7 +58,6 @@ const DynamicPage = () => {
         (item) => item?.course?._id === courseId
       );
       setIsEnrolled(alreadyEnrolled);
-
     } catch (error) {
       console.error("ERROR: ", error);
     } finally {
@@ -68,8 +66,8 @@ const DynamicPage = () => {
   };
 
   // const isEnrolled = enrollData?.some?.((course) => course?._id === data?._id);
-  console.log(enrollData, "120310");
-  console.log(isEnrolled);
+  // console.log(enrollData, "120310");
+  // console.log(isEnrolled);
 
   const fetchedData = async () => {
     try {
@@ -98,6 +96,59 @@ const DynamicPage = () => {
 
   const handleBack = () => navigate("/courses");
 
+  const handlePayment = async () => {
+    console.log("raz btn clicked");
+    try {
+      const orderRes = await axiosInstance.post("/api/payment/create-order", {
+        amount: data.price, // dynamic price
+        courseId: data._id,
+      });
+
+      const options = {
+        key: "rzp_test_RvsMPlknvil3gO", // test key only
+        amount: orderRes.data.amount,
+        currency: "INR",
+        name: "E-Learning App",
+        description: data.courseName,
+        order_id: orderRes.data.id,
+
+        handler: async function (response) {
+          // ✅ verify payment
+          const verifyRes = await axiosInstance.post(
+            "/api/payment/verify-payment",
+            {
+              ...response,
+              courseId: data._id,
+            }
+          );
+          console.log(verifyRes,"verifyyyy resss");
+          debugger
+
+          if (verifyRes.data.success) {
+            toast.success("Payment successful & enrolled 🎉", {
+              autoClose: 1500,
+            });
+
+            setIsEnrolled(true);
+            await getEnrolledCourses();
+
+            const userData = await getProfile();
+            dispatch(addUser(userData));
+          }
+        },
+
+        theme: {
+          color: "#4f46e5",
+        },
+      };
+
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error(error);
+      toast.error("Payment failed. Try again.");
+    }
+  };
   const handleEnroll = async () => {
     try {
       if (isEnrolled) {
@@ -112,25 +163,25 @@ const DynamicPage = () => {
       if (response.status !== 200)
         throw new Error("Failed to enroll in course.");
 
-      toast.success("Enrolled successfully!",{
-        autoClose:1500
+      toast.success("Enrolled successfully!", {
+        autoClose: 1500,
       });
 
       dispatch(addExistedEnrolls([...enrollData, data]));
       await getEnrolledCourses(); // refresh Redux + local state
       setIsEnrolled(true); // update local status
-      const userData=await getProfile()
-      dispatch(addUser(userData))
+      const userData = await getProfile();
+      dispatch(addUser(userData));
     } catch (error) {
       if (error?.response?.status === 409) {
-        toast.warning("You are already enrolled in this course.",{
-        autoClose:2000
-      });
+        toast.warning("You are already enrolled in this course.", {
+          autoClose: 2000,
+        });
         setIsEnrolled(true);
       } else {
-        toast.error("Enrollment failed. Try again.",{
-        autoClose:2000
-      });
+        toast.error("Enrollment failed. Try again.", {
+          autoClose: 2000,
+        });
       }
     }
   };
@@ -331,7 +382,13 @@ const DynamicPage = () => {
 
                 {!checkingEnrollment && (
                   <button
-                    onClick={handleEnroll}
+                    onClick={() => {
+                      if (data.price && data.price > 0) {
+                        handlePayment(); // 💳 paid course
+                      } else {
+                        handleEnroll(); // 🆓 free course
+                      }
+                    }}
                     className={`enroll-button ${isEnrolled ? "enrolled" : ""}`}
                     disabled={isEnrolled}
                   >
@@ -340,9 +397,14 @@ const DynamicPage = () => {
                         <CheckCircle size={20} />
                         Already Enrolled
                       </>
+                    ) : data.price && data.price > 0 ? (
+                      <>
+                        Pay ₹{data.price} & Enroll
+                        <ArrowRight size={20} />
+                      </>
                     ) : (
                       <>
-                        Enroll Now
+                        Enroll for Free
                         <ArrowRight size={20} />
                       </>
                     )}
