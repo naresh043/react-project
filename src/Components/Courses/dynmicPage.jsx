@@ -113,7 +113,6 @@ const DynamicPage = () => {
         order_id: orderRes.data.id,
 
         handler: async function (response) {
-          // ✅ verify payment
           const verifyRes = await axiosInstance.post(
             "/api/payment/verify-payment",
             {
@@ -121,9 +120,6 @@ const DynamicPage = () => {
               courseId: data._id,
             }
           );
-          console.log(verifyRes,"verifyyyy resss");
-          debugger
-
           if (verifyRes.data.success) {
             toast.success("Payment successful & enrolled 🎉", {
               autoClose: 1500,
