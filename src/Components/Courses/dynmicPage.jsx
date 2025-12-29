@@ -17,17 +17,16 @@ import {
   User,
   Tag,
   Info,
-  Book,
-  List,
   BarChart2,
   Play,
   Users,
   Target,
 } from "react-feather";
-import Rating from "react-rating";
 import { addExistedEnrolls } from "../../Redux/features/enrolledCoursesSlice";
 import { getProfile } from "../../utils/getUser";
 import { addUser } from "../../Redux/features/userSlice";
+import PaymentSuccessPopup from "../payment/PaymentSuccess";
+import { downloadReceipt } from "../../utils/downloadReceipt";
 
 const DynamicPage = () => {
   const navigate = useNavigate();
@@ -37,8 +36,10 @@ const DynamicPage = () => {
   const [error, setError] = useState(null);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [checkingEnrollment, setCheckingEnrollment] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+  const [receipt, setReceipt] = useState(null);
 
-  console.log(data, "cr idddddd");
+  console.log(receipt, "recipttttttttttttttttttt");
 
   const userData = useSelector((state) => state?.user) || {};
   const enrollData = useSelector((state) => state?.enrolledCourses) || [];
@@ -121,15 +122,13 @@ const DynamicPage = () => {
             }
           );
           if (verifyRes.data.success) {
-            toast.success("Payment successful & enrolled 🎉", {
-              autoClose: 1500,
-            });
-
             setIsEnrolled(true);
             await getEnrolledCourses();
 
             const userData = await getProfile();
             dispatch(addUser(userData));
+            setReceipt(verifyRes.data.receipt);
+            setShowPopup(true);
           }
         },
 
@@ -416,6 +415,12 @@ const DynamicPage = () => {
           </div>
         </div>
       </div>
+      <PaymentSuccessPopup
+        open={showPopup}
+        receipt={receipt}
+        onDashboard={() => navigate("/app/enrolledcourses")}
+        onDownload={() => downloadReceipt(receipt)}
+      />
     </main>
   );
 };
