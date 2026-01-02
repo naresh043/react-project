@@ -10,9 +10,9 @@ import { useSelector } from "react-redux";
 import axiosInstance from "../../config/axiosConfig";
 function LogIn() {
   let [userData, setuserData] = useState({
-    email: "bhanu@example.com",
-    password: "Bhanu@143",
-  });
+    email: "",
+    password: "",
+  });//bhanu@example.com,Bhanu@143
   console.log(userData);
   const [showPassword, setShowPassword] = useState(false);
 
