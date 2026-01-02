@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import axiosInstance from "./config/axiosConfig";
 import { addAuth } from "./Redux/features/authSlice";
 import { addUser } from "./Redux/features/userSlice";
+import LoadingSpinner from "./Components/Common/LodingSpinneer";
 
 export default function AppInitializer({ children }) {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ export default function AppInitializer({ children }) {
   }, [dispatch]);
 
   // ✅ Block app rendering until auth is resolved
-  if (loading) return null; // or <Loading />
+  if (loading) return <LoadingSpinner/>; // or <Loading />
 
   return children;
 }
