@@ -49,7 +49,7 @@ function Signup() {
           autoClose: 1500,
         });
 
-        navigate("/");
+        navigate("/app");
       }
     } catch (error) {
       // Handle 409 error for existing user
