@@ -6,7 +6,7 @@ function Coursel_home() {
   const navigate=useNavigate()   
 
   const EnrollCourse = () => {
-    navigate("/courses");
+    navigate("/app/courses");
     console.log("btn clicked");
   };
   return (

@@ -118,29 +118,43 @@ function LogIn() {
     }
   };
 
-  let handleGuestLogin = async () => {
-    const guestUser = {
-      email: "guest@example.com",
-      password: "Guest@143",
-    };
+ const handleGuestLogin = async () => {
+  const guestUser = {
+    email: "guest@example.com",
+    password: "Guest@143",
+  };
 
+  try {
+    // 1️⃣ Login
     await axiosInstance.post("/api/users/login", guestUser);
 
+    // 2️⃣ Fetch authenticated user
     const res = await axiosInstance.get("/api/auth/me");
 
+    // 3️⃣ Update redux
     dispatch(addAuth(res.data.authenticated));
     dispatch(addUser(res.data.user));
 
-    toast.success("Logged successful as Guest!", {
+    // 4️⃣ Success message
+    toast.success("Logged in as Guest!", {
       position: "top-right",
       autoClose: 1000,
-      style: {
-        backgroundColor: "#021B79",
-        color: "white",
-      },
-      onClose: () => navigate("/app"),
     });
-  };
+
+    // 5️⃣ Navigate safely
+    setTimeout(() => navigate("/app"), 1000);
+
+  } catch (error) {
+    console.error(error);
+
+    if (error.response?.status === 401) {
+      toast.error("Guest account not available.");
+    } else {
+      toast.error("Guest login failed. Try again.");
+    }
+  }
+};
+
 
   return (
     <>
