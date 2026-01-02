@@ -95,7 +95,7 @@ const DynamicPage = () => {
     }
   }, [courseId]);
 
-  const handleBack = () => navigate("/courses");
+  const handleBack = () => navigate("/app/courses");
 
   const handlePayment = async () => {
     console.log("raz btn clicked");
